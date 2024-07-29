@@ -5,7 +5,6 @@ import L from 'leaflet';
 import { motion, AnimatePresence } from 'framer-motion';
 import ActionBar from './ActionBar';
 import Details from './Details';
-import axios from 'axios';
 
 // Fix for default marker icon
 delete L.Icon.Default.prototype._getIconUrl;
@@ -40,7 +39,7 @@ function App() {
   const [selectedYear, setSelectedYear] = useState("1990");
   const [box, setBox] = useState([]);
   const [mapContainerStyle, setMapContainerStyle] = useState(initialMapContainerStyle);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState("ideal");
   const [historyData, setHistoryData] = useState(null);
 
   useEffect(() => {
@@ -84,10 +83,17 @@ function App() {
   };
 
   const handleSearch = async () => {
-    setIsLoading(true);
+    setIsLoading("loading");
     try {
-      const response = await axios.post(`http://localhost:5000/api/get/history/${selectedYear}`, { bbox: box });
-      setHistoryData(response.data);
+      // const response = await axios.post(`http://localhost:5000/api/get/history/${selectedYear}`, { bbox: box });
+      await new Promise(resolve => setTimeout(resolve, 30000)); // 30000 ms = 30 seconds
+      setHistoryData({
+        year: 2000,
+        "forest Area(%)": 0.3857756120199559,
+        "land_Area(%)": 99.61422438798004,
+        img_url:
+          "http://res.cloudinary.com/dzqf5owza/image/upload/v1722279993/nfbeqzm9fw6zun7e4gwa.png",
+      });
     } catch (error) {
       console.error('Error fetching history data:', error);
     } finally {
@@ -138,7 +144,7 @@ function App() {
               animate={{ x: 0 }}
               transition={{ duration: 0.5, ease: "easeInOut" }}
             >
-              <Details isLoading={isLoading} historyData={historyData} />
+              <Details isLoading={isLoading} data={historyData} />
             </motion.div>
           )}
         </AnimatePresence>
