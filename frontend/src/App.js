@@ -36,6 +36,7 @@ function MapEvents({ onClick }) {
 function App() {
   const [clickedLocation, setClickedLocation] = useState(null);
   const [locationName, setLocationName] = useState('');
+  const [selectedYear, setSelectedYear] = useState("1990");
   const [box, setBox] = useState([]);
   const [mapContainerStyle, setMapContainerStyle] = useState(initialMapContainerStyle);
 
@@ -136,7 +137,7 @@ function App() {
             transition={{ duration: 0.6, ease: "easeInOut" }}
             className="w-full"
           >
-            <ActionBar locationName={locationName} clickedLocation={clickedLocation} />
+            <ActionBar selectedYear={selectedYear} setSelectedYear={setSelectedYear} locationName={locationName} clickedLocation={clickedLocation} />
           </motion.div>
         )}
       </AnimatePresence>
