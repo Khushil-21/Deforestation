@@ -1,14 +1,20 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 
 export default function Details({ isLoading, data }) {
-	console.log("isLoading: ", isLoading);
-	// const data = {
-	// 	year: 2000,
-	// 	"forest Area(%)": 0.3857756120199559,
-	// 	"land_Area(%)": 99.61422438798004,
-	// 	img_url:
-	// 		"http://res.cloudinary.com/dzqf5owza/image/upload/v1722279993/nfbeqzm9fw6zun7e4gwa.png",
-	// };
+	const [selectedYear, setSelectedYear] = useState(2019);
+	const [selectedData, setSelectedData] = useState(null);
+
+	useEffect(() => {
+		if (data) {
+			const yearData = data.find(item => item.year === selectedYear);
+			setSelectedData(yearData);
+		}
+	}, [data, selectedYear]);
+
+	const handleYearChange = (event) => {
+		setSelectedYear(Number(event.target.value));
+	};
+
 	return (
 		<div className="w-[45vw] h-[70vh] rounded-xl shadow-lg ">
 			{isLoading === "ideal" || isLoading === "loading" ? (
@@ -47,19 +53,29 @@ export default function Details({ isLoading, data }) {
 			) : (
 				<div className="w-full h-full rounded-xl flex flex-col">
 					<img
-						src={data?.img_url}
+						src={selectedData?.img_url}
 						alt="forest"
 						className="flex-grow rounded-xl"
 					/>
 					<div className="h-20 flex justify-center items-center gap-10 rounded-xl overflow-hidden">
-						<div className="p-4 rounded-xl bg-green-100 border border-green-500 text-green-500 font-semibold">
-							Year : {data?.year}
+						<div className="p-4 bg-white rounded-xl shadow-lg">
+							<select
+								value={selectedYear}
+								onChange={handleYearChange}
+								className="w-full bg-white rounded-xl border-none focus:outline-none"
+							>
+								{data && data.map(item => (
+									<option key={item.year} value={item.year}>
+										{item.year}
+									</option>
+								))}
+							</select>
 						</div>
 						<div className="p-4 rounded-xl bg-green-100 border border-green-500 text-green-500 font-semibold">
-							forest area {data?.["forest Area(%)"]?.toFixed(3)}%
+							forest area {selectedData?.["forest Area(%)"]?.toFixed(3)}%
 						</div>
 						<div className="p-4 rounded-xl bg-yellow-600/20 border border-yellow-600 text-yellow-600 font-semibold">
-							land area {data?.["land_Area(%)"]?.toFixed(3)}%
+							land area {selectedData?.["land_Area(%)"]?.toFixed(3)}%
 						</div>
 					</div>
 				</div>
