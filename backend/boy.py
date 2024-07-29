@@ -9,7 +9,7 @@ load_dotenv()
 def generate_report(data: str) -> str:
     """Generate a report based on the data of deforestation."""
     # return data
-    data=data['data']
+    # data=data['data']
     data = data['received_data'].__str__()
     
     prompt = ChatPromptTemplate.from_messages(

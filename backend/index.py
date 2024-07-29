@@ -1,6 +1,9 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
+from pydantic import BaseModel
+from typing import List, Optional
 import uvicorn
 import os
+from typing import List
 # import tensorflow as tf
 # from tensorflow.keras.models import Model
 import numpy as np
@@ -29,6 +32,11 @@ l7 = ee.ImageCollection("LANDSAT/LE07/C02/T1_L2")
 l8 = ee.ImageCollection("LANDSAT/LC08/C02/T1_L2")
 l9 = ee.ImageCollection("LANDSAT/LC09/C02/T1_L2")
 
+data={}
+report=str()
+
+class BboxRequest(BaseModel):
+    bbox: List[float] = None
 
 def filter_col(col, roi, start_date, end_date):
     return col.filterBounds(roi).filterDate(start_date, end_date)
@@ -76,8 +84,8 @@ def generateMasks(start_date,end_date,i,intermediate_layer_model,bbox=[-59.5026,
     img_resized = np.expand_dims(img_resized, axis=0)
 
 
-    intermediate_output = intermediate_layer_model.predict(img_resized)
-    out=intermediate_output[0,:,:,0]
+    # intermediate_output = intermediate_layer_model.predict(img_resized)
+    # out=intermediate_output[0,:,:,0]
 
     binary_mask = np.where(scaled_data >= 125, 1, 0)
 
@@ -101,16 +109,23 @@ def hello_world():
     return {"message": "Hello From Python Backend"}
 
 @app.get("/getBot")
-def getBot(data:dict | None = None):
+def getBot():
+    global data,report
     resp=generate_report(data)
     
-    return {
+    myReport={
         "message": "Api Called Success",
         'report':resp
     }
+    
+    if report!=myReport:
+        report=myReport
+        
+    return report
 
 @app.post("/api/get/history/{year}")
-async def get_history(year: int, bbox: list | None = None):
+async def get_history(request: BboxRequest):
+    global data
     forestData=[]
     cloudinary.config(
     cloud_name = 'dzqf5owza',  # Replace with your Cloudinary cloud name
@@ -124,19 +139,22 @@ async def get_history(year: int, bbox: list | None = None):
     layer_name = 'conv2d_35'  # Replace with your layer of interest
     # intermediate_layer_model = Model(inputs=model.input, outputs=model.get_layer(layer_name).output)
     intermediate_layer_model=None
-    bbox=bbox
+    print(request.bbox)
+    bbox=request.bbox
     # year=year
     for i in range(1984,2025,5):
         start_date=ee.Date.fromYMD(i - 1,1,1)
         end_date = ee.Date.fromYMD(i + 1,12,31)
         forestData.append(generateMasks(start_date,end_date,i,intermediate_layer_model,bbox))
     
-    
-    return {
-        "message": f"Fetching history for year {year}",
+    retFor={
         "received_data": forestData,
-        "year": year
     }
+    
+    if data!=retFor:
+        data=retFor
+        
+    return retFor
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
