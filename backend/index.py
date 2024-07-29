@@ -19,21 +19,23 @@ from PIL import Image
 import io
 
 app = FastAPI()
+ee.Authenticate()
+ee.Initialize()
+l4 = ee.ImageCollection("LANDSAT/LT04/C02/T1_L2")
+l5 = ee.ImageCollection("LANDSAT/LT05/C02/T1_L2")
+l7 = ee.ImageCollection("LANDSAT/LE07/C02/T1_L2")
+l8 = ee.ImageCollection("LANDSAT/LC08/C02/T1_L2")
+l9 = ee.ImageCollection("LANDSAT/LC09/C02/T1_L2")
 
 
 def filter_col(col, roi, start_date, end_date):
     return col.filterBounds(roi).filterDate(start_date, end_date)
     
-def generateMasks(start_date,end_date,intermediate_layer_model,bbox=[-59.5026, 2.9965, -59.2035, 3.1899]):
+def generateMasks(start_date,end_date,i,intermediate_layer_model,bbox=[-59.5026, 2.9965, -59.2035, 3.1899]):
     
     # Define the collections
-    forestData=[]
+    global l4,l5,l6,l7,l8,l9
     roi = ee.Geometry.Rectangle(bbox)
-    l4 = ee.ImageCollection("LANDSAT/LT04/C02/T1_L2")
-    l5 = ee.ImageCollection("LANDSAT/LT05/C02/T1_L2")
-    l7 = ee.ImageCollection("LANDSAT/LE07/C02/T1_L2")
-    l8 = ee.ImageCollection("LANDSAT/LC08/C02/T1_L2")
-    l9 = ee.ImageCollection("LANDSAT/LC09/C02/T1_L2")
 
     # Helper function to filter collections
 
@@ -89,8 +91,8 @@ def generateMasks(start_date,end_date,intermediate_layer_model,bbox=[-59.5026, 2
     print(f"Forest Percentage: {forest_percentage:.2f}%")
     print(f"Land Percentage: {land_percentage:.2f}%")
 
-    forestData.append({'start_date':start_date,'end_date':end_date,'forest Area(%)':forest_percentage,'land_Area(%)':land_percentage,'img_url':response['url']})
-    return forestData
+    return {'year':i,'forest Area(%)':forest_percentage,'land_Area(%)':land_percentage,'img_url':response['url']}
+    # return forestData
 
 @app.get("/")
 def hello_world():
@@ -98,8 +100,7 @@ def hello_world():
 
 @app.post("/api/get/history/{year}")
 async def get_history(year: int, bbox: list | None = None):
-    ee.Authenticate()
-    ee.Initialize()
+    forestData=[]
     cloudinary.config(
     cloud_name = 'dzqf5owza',  # Replace with your Cloudinary cloud name
     api_key = '831483217291572',        # Replace with your Cloudinary API key
@@ -112,16 +113,17 @@ async def get_history(year: int, bbox: list | None = None):
     layer_name = 'conv2d_35'  # Replace with your layer of interest
     intermediate_layer_model = Model(inputs=model.input, outputs=model.get_layer(layer_name).output)
 
-    bbox=bbox
-    year=year
-    start_date=ee.Date.fromYMD(year - 1,1,1)
-    end_date = ee.Date.fromYMD(year + 1,12,31)
-    data=generateMasks(start_date,end_date,intermediate_layer_model,bbox)
+    bbox=[-59.5026, 2.9965, -59.2035, 3.1899]
+    # year=year
+    for i in range(1984,2025,5):
+        start_date=ee.Date.fromYMD(i - 1,1,1)
+        end_date = ee.Date.fromYMD(i + 1,12,31)
+        forestData.append(generateMasks(start_date,end_date,i,intermediate_layer_model,bbox))
     
     
     return {
         "message": f"Fetching history for year {year}",
-        "received_data": data,
+        "received_data": forestData,
         "year": year
     }
 
