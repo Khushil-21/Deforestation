@@ -92,6 +92,7 @@ function App() {
           "year": 1984,
           "forest Area(%)": 9.138110463766042,
           "land_Area(%)": 90.86188953623395,
+
           "img_url": "http://res.cloudinary.com/dzqf5owza/image/upload/v1722287134/rf5037jtoldnj4kwe86x.png"
         },
         {
@@ -144,6 +145,18 @@ function App() {
       setIsLoading(false);
     }
   };
+  const [showModal, setShowModal] = useState(false);
+  const [report, setReport] = useState(""); // Placeholder for report text
+  const handleViewReport = () => {
+    setReport(`*Trend Analysis\n\nThe historical data shows a fluctuating trend in forest cover over the years. The forest percentage has decreased from 25.58% in 1984 to 18.82% in 1989, indicating a significant decline. However, the trend reverses, and the forest percentage increases to 23.37% in 1994, followed by a steady increase to 27.57% in 1999. The forest percentage then fluctuates between 26.40% in 2004 and 30.33% in 2009. The trend continues to decline, reaching 23.35% in 2014, before increasing to 33.46% in 2019. The most recent data point in 2024 shows a decline to 21.67%.\n\nNotable increases in forest percentage include the years 1994, 1999, and 2019, while notable decreases occurred in 1989 and 2014. The fluctuations in forest cover may be attributed to various factors, including natural disasters, policy changes, economic activities, and data errors.\n\nImpact Assessment\n\nThe observed deforestation trends have significant ecological, social, and economic impacts. The decline in forest cover can lead to:\n\n1. Loss of biodiversity: Forests are crucial habitats for many species, and their destruction can result in the extinction of endemic species.\n2. Climate change: Forests play a critical role in sequestering carbon dioxide, and their destruction can contribute to increased greenhouse gas emissions.\n3. Soil erosion: Forests help maintain soil quality and prevent erosion, which can lead to landslides and sedimentation in waterways.\n4. Displacement of local communities: Deforestation can lead to the displacement of indigenous communities and the loss of their traditional livelihoods.\n5. Economic losses: Deforestation can result in the loss of valuable timber resources, reduced tourism revenue, and decreased agricultural productivity.\n\nPreventive Measures\n\nTo prevent further deforestation, the following strategies can be implemented:\n\n1. Conservation efforts: Establish protected areas, such as national parks and wildlife reserves, to safeguard remaining forests.\n2. Sustainable land management practices: Implement sustainable agriculture practices, such as agroforestry and permaculture, to reduce deforestation.\n3. Reforestation programs: Plant trees in areas where forests have been cleared, and promote reforestation efforts in collaboration with local communities.\n4. Policy recommendations: Strengthen forest conservation policies, enforce regulations, and provide incentives for sustainable land use practices.\n5. Community involvement: Educate local communities about the importance of forest conservation and involve them in decision-making processes.\n6. International cooperation: Collaborate with international organizations and governments to share best practices, provide technical assistance, and mobilize resources for forest conservation.\n\nLong-Term Outlook*\n\nBased on the historical data, it is projected that the forest cover will continue to fluctuate, with a possible decline in the long term if preventive measures are not implemented effectively. If current trends continue, the forest cover may decline to 20% or lower by 2050, leading to severe ecological, social, and economic consequences.\n\nIn conclusion, the analysis highlights the importance of addressing deforestation trends through a combination of conservation efforts, sustainable land management practices, reforestation programs, and policy recommendations. It is essential to involve local communities and international organizations in forest conservation efforts to ensure the long-term sustainability of forest ecosystems."`)
+    setShowModal(true);
+  };
+
+  const handleCloseModal = (e) => {
+    if (e.target.classList.contains('modal-overlay')) {
+      setShowModal(false);
+    }
+  };
 
   return (
     <div className={`App bg-blue-50 p-9 flex flex-col items-center w-full h-screen`}>
@@ -188,7 +201,7 @@ function App() {
               animate={{ x: 0 }}
               transition={{ duration: 0.5, ease: "easeInOut" }}
             >
-              <Details isLoading={isLoading} data={historyData} />
+              <Details isLoading={isLoading} data={historyData} handleViewReport={handleViewReport} setReport={setReport} setShowModal={setShowModal} />
             </motion.div>
           )}
         </AnimatePresence>
@@ -211,6 +224,17 @@ function App() {
               isLoading={isLoading}
             />
           </motion.div>
+        )}
+        {showModal && (
+          <div
+            className="fixed z-[9999999999999999999999999999999999999999999] inset-0 bg-black bg-opacity-50 flex justify-center items-center modal-overlay"
+            onClick={handleCloseModal}
+          >
+            <div className="bg-white p-6 rounded-lg max-w-2xl max-h-[80vh] overflow-auto">
+              <h2 className="text-2xl font-bold mb-4">Report</h2>
+              <p>{report}</p>
+            </div>
+          </div>
         )}
       </AnimatePresence>
     </div>

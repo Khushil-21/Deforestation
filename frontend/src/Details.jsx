@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from "react";
 
-export default function Details({ isLoading, data }) {
+export default function Details({ isLoading, data , setReport , setShowModal , handleViewReport}) {
 	const [selectedYear, setSelectedYear] = useState(2019);
 	const [selectedData, setSelectedData] = useState(null);
+	
 
 	useEffect(() => {
 		if (data) {
-			const yearData = data.find(item => item.year === selectedYear);
+			const yearData = data.find((item) => item.year === selectedYear);
 			setSelectedData(yearData);
 		}
 	}, [data, selectedYear]);
@@ -14,6 +15,8 @@ export default function Details({ isLoading, data }) {
 	const handleYearChange = (event) => {
 		setSelectedYear(Number(event.target.value));
 	};
+
+	
 
 	return (
 		<div className="w-[45vw] h-[70vh] rounded-xl shadow-lg ">
@@ -64,11 +67,12 @@ export default function Details({ isLoading, data }) {
 								onChange={handleYearChange}
 								className="w-full bg-white rounded-xl border-none focus:outline-none"
 							>
-								{data && data.map(item => (
-									<option key={item.year} value={item.year}>
-										{item.year}
-									</option>
-								))}
+								{data &&
+									data.map((item) => (
+										<option key={item.year} value={item.year}>
+											{item.year}
+										</option>
+									))}
 							</select>
 						</div>
 						<div className="p-4 rounded-xl bg-green-100 border border-green-500 text-green-500 font-semibold">
@@ -77,9 +81,16 @@ export default function Details({ isLoading, data }) {
 						<div className="p-4 rounded-xl bg-yellow-600/20 border border-yellow-600 text-yellow-600 font-semibold">
 							land area {selectedData?.["land_Area(%)"]?.toFixed(3)}%
 						</div>
+						<div
+							className="p-4 rounded-xl cursor-pointer bg-blue-600/20 border border-blue-600 text-blue-600 font-semibold"
+							onClick={handleViewReport}
+						>
+							View Report
+						</div>
 					</div>
 				</div>
 			)}
+			
 		</div>
 	);
 }
