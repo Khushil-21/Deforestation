@@ -13,3 +13,4 @@ pillow
 openpyxl
 pandas
 matplotlib
+langchain_groq

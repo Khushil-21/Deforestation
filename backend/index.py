@@ -1,13 +1,12 @@
 from fastapi import FastAPI
 import uvicorn
 import os
-import tensorflow as tf
-from tensorflow.keras.models import Model
+# import tensorflow as tf
+# from tensorflow.keras.models import Model
 import numpy as np
 import cv2
 import ee
 import geemap
-import leafmap
 import matplotlib.pyplot as plt
 from sklearn.preprocessing import StandardScaler
 import keras
@@ -17,6 +16,9 @@ import cloudinary.uploader
 import cloudinary.api
 from PIL import Image
 import io
+from boy import generate_report
+from dotenv import load_dotenv
+load_dotenv()
 
 app = FastAPI()
 ee.Authenticate()
@@ -98,22 +100,31 @@ def generateMasks(start_date,end_date,i,intermediate_layer_model,bbox=[-59.5026,
 def hello_world():
     return {"message": "Hello From Python Backend"}
 
+@app.get("/getBot")
+def getBot(data:dict | None = None):
+    resp=generate_report(data)
+    
+    return {
+        "message": "Api Called Success",
+        'report':resp
+    }
+
 @app.post("/api/get/history/{year}")
 async def get_history(year: int, bbox: list | None = None):
     forestData=[]
     cloudinary.config(
     cloud_name = 'dzqf5owza',  # Replace with your Cloudinary cloud name
     api_key = '831483217291572',        # Replace with your Cloudinary API key
-    api_secret = 'WZnkpFNMTxWMVV8o8QJfEXjjlVU'   # Replace with your Cloudinary API secret
+    api_secret = os.getenv("CLOUD_KEY")   # Replace with your Cloudinary API secret
     )
 
 
     keras.config.enable_unsafe_deserialization()
-    model = tf.keras.models.load_model("F:\\Maverick\\unet_model_final.keras")
+    # model = tf.keras.models.load_model("F:\\Maverick\\unet_model_final.keras")
     layer_name = 'conv2d_35'  # Replace with your layer of interest
-    intermediate_layer_model = Model(inputs=model.input, outputs=model.get_layer(layer_name).output)
-
-    bbox=[-59.5026, 2.9965, -59.2035, 3.1899]
+    # intermediate_layer_model = Model(inputs=model.input, outputs=model.get_layer(layer_name).output)
+    intermediate_layer_model=None
+    bbox=bbox
     # year=year
     for i in range(1984,2025,5):
         start_date=ee.Date.fromYMD(i - 1,1,1)
