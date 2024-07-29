@@ -86,7 +86,7 @@ function App() {
     setIsLoading("loading");
     try {
       // const response = await axios.post(`http://localhost:5000/api/get/history/${selectedYear}`, { bbox: box });
-      await new Promise(resolve => setTimeout(resolve, 300)); // 30000 ms = 30 seconds
+      await new Promise(resolve => setTimeout(resolve, 50000)); // 30000 ms = 30 seconds
       setHistoryData([
         {
           "year": 1984,
@@ -148,38 +148,6 @@ function App() {
   const [showModal, setShowModal] = useState(false);
   const [report, setReport] = useState(""); // Placeholder for report text
   const handleViewReport = () => {
-    setReport(`Trend Analysis
-
-The historical data shows a fluctuating trend in forest cover over the years. The forest percentage has decreased from 25.58% in 1984 to 18.82% in 1989, indicating a significant decline. However, the trend reverses, and the forest percentage increases to 23.37% in 1994, followed by a steady increase to 27.57% in 1999. The forest percentage then fluctuates between 26.40% in 2004 and 30.33% in 2009. The trend continues to decline, reaching 23.35% in 2014, before increasing to 33.46% in 2019. The most recent data point in 2024 shows a decline to 21.67%.
-
-Notable increases in forest percentage include the years 1994, 1999, and 2019, while notable decreases occurred in 1989 and 2014. The fluctuations in forest cover may be attributed to various factors, including natural disasters, policy changes, economic activities, and data errors.
-
-Impact Assessment
-
-The observed deforestation trends have significant ecological, social, and economic impacts. The decline in forest cover can lead to:
-
-1. Loss of biodiversity: Forests are crucial habitats for many species, and their destruction can result in the extinction of endemic species.
-2. Climate change: Forests play a critical role in sequestering carbon dioxide, and their destruction can contribute to increased greenhouse gas emissions.
-3. Soil erosion: Forests help maintain soil quality and prevent erosion, which can lead to landslides and sedimentation in waterways.
-4. Displacement of local communities: Deforestation can lead to the displacement of indigenous communities and the loss of their traditional livelihoods.
-5. Economic losses: Deforestation can result in the loss of valuable timber resources, reduced tourism revenue, and decreased agricultural productivity.
-
-Preventive Measures
-
-To prevent further deforestation, the following strategies can be implemented:
-
-1. Conservation efforts: Establish protected areas, such as national parks and wildlife reserves, to safeguard remaining forests.
-2. Sustainable land management practices: Implement sustainable agriculture practices, such as agroforestry and permaculture, to reduce deforestation.
-3. Reforestation programs: Plant trees in areas where forests have been cleared, and promote reforestation efforts in collaboration with local communities.
-4. Policy recommendations: Strengthen forest conservation policies, enforce regulations, and provide incentives for sustainable land use practices.
-5. Community involvement: Educate local communities about the importance of forest conservation and involve them in decision-making processes.
-6. International cooperation: Collaborate with international organizations and governments to share best practices, provide technical assistance, and mobilize resources for forest conservation.
-
-Long-Term Outlook
-
-Based on the historical data, it is projected that the forest cover will continue to fluctuate, with a possible decline in the long term if preventive measures are not implemented effectively. If current trends continue, the forest cover may decline to 20% or lower by 2050, leading to severe ecological, social, and economic consequences.
-
-In conclusion, the analysis highlights the importance of addressing deforestation trends through a combination of conservation efforts, sustainable land management practices, reforestation programs, and policy recommendations. It is essential to involve local communities and international organizations in forest conservation efforts to ensure the long-term sustainability of forest ecosystems.`)
     setShowModal(true);
   };
 
@@ -263,7 +231,42 @@ In conclusion, the analysis highlights the importance of addressing deforestatio
           >
             <div className="bg-white p-6 rounded-lg max-w-2xl max-h-[80vh] overflow-auto">
               <h2 className="text-2xl font-bold mb-4">Report</h2>
-              <p className="whitespace-pre-wrap">{report}</p>
+              <h1 className="text-3xl font-bold mb-4">Trend Analysis</h1>
+
+              <p className="mb-4">The historical data shows a fluctuating trend in forest cover over the years. The forest percentage has decreased from 25.58% in 1984 to 18.82% in 1989, indicating a significant decline. However, the trend reverses, and the forest percentage increases to 23.37% in 1994, followed by a steady increase to 27.57% in 1999. The forest percentage then fluctuates between 26.40% in 2004 and 30.33% in 2009. The trend continues to decline, reaching 23.35% in 2014, before increasing to 33.46% in 2019. The most recent data point in 2024 shows a decline to 21.67%.</p>
+
+              <p className="mb-4">Notable increases in forest percentage include the years 1994, 1999, and 2019, while notable decreases occurred in 1989 and 2014. The fluctuations in forest cover may be attributed to various factors, including natural disasters, policy changes, economic activities, and data errors.</p>
+
+              <h2 className="text-2xl font-bold mt-6 mb-4">Impact Assessment</h2>
+
+              <p className="mb-4">The observed deforestation trends have significant ecological, social, and economic impacts. The decline in forest cover can lead to:</p>
+
+              <ul className="list-disc pl-6 mb-4">
+                <li>Loss of biodiversity: Forests are crucial habitats for many species, and their destruction can result in the extinction of endemic species.</li>
+                <li>Climate change: Forests play a critical role in sequestering carbon dioxide, and their destruction can contribute to increased greenhouse gas emissions.</li>
+                <li>Soil erosion: Forests help maintain soil quality and prevent erosion, which can lead to landslides and sedimentation in waterways.</li>
+                <li>Displacement of local communities: Deforestation can lead to the displacement of indigenous communities and the loss of their traditional livelihoods.</li>
+                <li>Economic losses: Deforestation can result in the loss of valuable timber resources, reduced tourism revenue, and decreased agricultural productivity.</li>
+              </ul>
+
+              <h2 className="text-2xl font-bold mt-6 mb-4">Preventive Measures</h2>
+
+              <p className="mb-4">To prevent further deforestation, the following strategies can be implemented:</p>
+
+              <ul className="list-disc pl-6 mb-4">
+                <li>Conservation efforts: Establish protected areas, such as national parks and wildlife reserves, to safeguard remaining forests.</li>
+                <li>Sustainable land management practices: Implement sustainable agriculture practices, such as agroforestry and permaculture, to reduce deforestation.</li>
+                <li>Reforestation programs: Plant trees in areas where forests have been cleared, and promote reforestation efforts in collaboration with local communities.</li>
+                <li>Policy recommendations: Strengthen forest conservation policies, enforce regulations, and provide incentives for sustainable land use practices.</li>
+                <li>Community involvement: Educate local communities about the importance of forest conservation and involve them in decision-making processes.</li>
+                <li>International cooperation: Collaborate with international organizations and governments to share best practices, provide technical assistance, and mobilize resources for forest conservation.</li>
+              </ul>
+
+              <h2 className="text-2xl font-bold mt-6 mb-4">Long-Term Outlook</h2>
+
+              <p className="mb-4">Based on the historical data, it is projected that the forest cover will continue to fluctuate, with a possible decline in the long term if preventive measures are not implemented effectively. If current trends continue, the forest cover may decline to 20% or lower by 2050, leading to severe ecological, social, and economic consequences.</p>
+
+              <p className="mb-4">In conclusion, the analysis highlights the importance of addressing deforestation trends through a combination of conservation efforts, sustainable land management practices, reforestation programs, and policy recommendations. It is essential to involve local communities and international organizations in forest conservation efforts to ensure the long-term sustainability of forest ecosystems.</p>
             </div>
           </div>
         )}
