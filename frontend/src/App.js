@@ -3,6 +3,8 @@ import { MapContainer, TileLayer, Marker, useMapEvents, LayersControl } from 're
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
 import { motion, AnimatePresence } from 'framer-motion';
+import ActionBar from './ActionBar';
+import Details from './Details';
 
 // Fix for default marker icon
 delete L.Icon.Default.prototype._getIconUrl;
@@ -61,7 +63,16 @@ function App() {
     try {
       const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`);
       const data = await response.json();
-      setLocationName(data.display_name || 'Unknown location');
+      console.log("data: ", data);
+      setLocationName(
+        [
+          data.address.country,
+          data.address.state,
+          data.address.state_district && data.address.state_district.length > 12
+            ? data.address.town
+            : data.address.state_district
+        ].filter(Boolean).join(" ") || 'Unknown location'
+      );
     } catch (error) {
       console.error('Error fetching location name:', error);
       setLocationName('Unable to fetch location name');
@@ -69,40 +80,66 @@ function App() {
   };
 
   return (
-    <div className={`App flex items-center ${clickedLocation ? 'justify-start' : 'justify-center'} p-9 w-full h-screen`}>
-      <motion.div
-        layout
-        initial={initialMapContainerStyle}
-        animate={mapContainerStyle}
-        transition={{ duration: 0.5, ease: "easeInOut" }}
-        className="w-full h-full"
-      >
-        <MapContainer
-          className='border-none outline-none focus:outline-none focus:border-none rounded-xl overflow-hidden shadow-lg'
-          center={center}
-          zoom={2}
-          style={{ width: '100%', height: '100%' }}
-          maxBounds={[[-90, -180], [90, 180]]}
-          minZoom={2}
+    <div className={`App bg-blue-50 p-9 flex flex-col items-center w-full h-screen`}>
+      <div className={`flex items-center ${clickedLocation ? 'justify-between' : 'justify-center'} w-full h-full`}>
+        <motion.div
+          layout
+          initial={initialMapContainerStyle}
+          animate={mapContainerStyle}
+          transition={{ duration: 0.5, ease: "easeInOut" }}
+          className="w-full h-full"
         >
-          <LayersControl position="topright">
-            <LayersControl.BaseLayer checked name="OpenStreetMap">
-              <TileLayer
-                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                noWrap={true}
-              />
-            </LayersControl.BaseLayer>
-            <LayersControl.BaseLayer name="Satellite">
-              <TileLayer
-                url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
-                noWrap={true}
-              />
-            </LayersControl.BaseLayer>
-          </LayersControl>
-          <MapEvents onClick={handleMapClick} />
-          {clickedLocation && <Marker position={[clickedLocation.lat, clickedLocation.lng]} />}
-        </MapContainer>
-      </motion.div>
+          <MapContainer
+            className='border-none outline-none focus:outline-none focus:border-none rounded-xl overflow-hidden shadow-lg'
+            center={center}
+            zoom={2}
+            style={{ width: '100%', height: '100%' }}
+            maxBounds={[[-90, -180], [90, 180]]}
+            minZoom={2}
+          >
+            <LayersControl position="topright">
+              <LayersControl.BaseLayer checked name="OpenStreetMap">
+                <TileLayer
+                  url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                  noWrap={true}
+                />
+              </LayersControl.BaseLayer>
+              <LayersControl.BaseLayer name="Satellite">
+                <TileLayer
+                  url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
+                  noWrap={true}
+                />
+              </LayersControl.BaseLayer>
+            </LayersControl>
+            <MapEvents onClick={handleMapClick} />
+            {clickedLocation && <Marker position={[clickedLocation.lat, clickedLocation.lng]} />}
+          </MapContainer>
+        </motion.div>
+        <AnimatePresence>
+          {clickedLocation && (
+            <motion.div
+              initial={{ x: '100%' }}
+              animate={{ x: 0 }}
+              transition={{ duration: 0.5, ease: "easeInOut" }}
+            >
+              <Details />
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+      </div>
+      <AnimatePresence>
+        {clickedLocation && (
+          <motion.div
+            initial={{ y: '100%' }}
+            animate={{ y: 0 }}
+            transition={{ duration: 0.6, ease: "easeInOut" }}
+            className="w-full"
+          >
+            <ActionBar locationName={locationName} clickedLocation={clickedLocation} />
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
