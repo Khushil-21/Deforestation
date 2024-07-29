@@ -37,10 +37,10 @@ function App() {
     lat = lat.toFixed(4) - 0;
     lng = lng.toFixed(4) - 0;
     const newBox = [
-      (lat + 0.07).toFixed(4),
-      (lng - 0.09).toFixed(4),
-      (lat - 0.07).toFixed(4),
-      (lng + 0.09).toFixed(4)
+      (lng - 0.2991).toFixed(4),
+      (lat + 0.0059).toFixed(4),
+      (lng + 0.2991).toFixed(4),
+      (lat - 0.0059).toFixed(4),
     ].map(Number);
     setBox(newBox);
     try {
