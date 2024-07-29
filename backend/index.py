@@ -4,9 +4,11 @@ import os
 
 app = FastAPI()
 
+
 @app.get("/")
 def hello_world():
-    return {"message": "Hello, World!"}
+    return {"message": "Hello From Python Backend"}
+
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
