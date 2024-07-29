@@ -14,3 +14,4 @@ openpyxl
 pandas
 matplotlib
 langchain_groq
+langchain_core

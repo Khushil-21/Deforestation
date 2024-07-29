@@ -5,6 +5,7 @@ export default function ActionBar({
 	clickedLocation,
 	setSelectedYear,
 	selectedYear,
+	onSearch,
 }) {
 	const years = ["1990", "2010", "2020"];
 
@@ -38,7 +39,10 @@ export default function ActionBar({
 						))}
 					</select>
 				</div>
-				<div className="p-4 active:scale-95 cursor-pointer flex justify-center items-center text-xl font-semibold bg-blue-500 text-white rounded-xl shadow-lg w-[20%]">
+				<div 
+					className="p-4 active:scale-95 cursor-pointer flex justify-center items-center text-xl font-semibold bg-blue-500 text-white rounded-xl shadow-lg w-[20%]"
+					onClick={onSearch}
+				>
 					Search
 				</div>
 			</div>

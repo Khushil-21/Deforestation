@@ -5,6 +5,7 @@ import L from 'leaflet';
 import { motion, AnimatePresence } from 'framer-motion';
 import ActionBar from './ActionBar';
 import Details from './Details';
+import axios from 'axios';
 
 // Fix for default marker icon
 delete L.Icon.Default.prototype._getIconUrl;
@@ -39,6 +40,8 @@ function App() {
   const [selectedYear, setSelectedYear] = useState("1990");
   const [box, setBox] = useState([]);
   const [mapContainerStyle, setMapContainerStyle] = useState(initialMapContainerStyle);
+  const [isLoading, setIsLoading] = useState(false);
+  const [historyData, setHistoryData] = useState(null);
 
   useEffect(() => {
     if (clickedLocation) {
@@ -77,6 +80,18 @@ function App() {
     } catch (error) {
       console.error('Error fetching location name:', error);
       setLocationName('Unable to fetch location name');
+    }
+  };
+
+  const handleSearch = async () => {
+    setIsLoading(true);
+    try {
+      const response = await axios.post(`http://localhost:5000/api/get/history/${selectedYear}`, { bbox: box });
+      setHistoryData(response.data);
+    } catch (error) {
+      console.error('Error fetching history data:', error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -123,7 +138,7 @@ function App() {
               animate={{ x: 0 }}
               transition={{ duration: 0.5, ease: "easeInOut" }}
             >
-              <Details />
+              <Details isLoading={isLoading} historyData={historyData} />
             </motion.div>
           )}
         </AnimatePresence>
@@ -137,7 +152,14 @@ function App() {
             transition={{ duration: 0.6, ease: "easeInOut" }}
             className="w-full"
           >
-            <ActionBar selectedYear={selectedYear} setSelectedYear={setSelectedYear} locationName={locationName} clickedLocation={clickedLocation} />
+            <ActionBar
+              selectedYear={selectedYear}
+              setSelectedYear={setSelectedYear}
+              locationName={locationName}
+              clickedLocation={clickedLocation}
+              onSearch={handleSearch}
+              isLoading={isLoading}
+            />
           </motion.div>
         )}
       </AnimatePresence>

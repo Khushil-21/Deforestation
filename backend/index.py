@@ -125,6 +125,7 @@ def getBot():
 
 @app.post("/api/get/history/{year}")
 async def get_history(request: BboxRequest):
+    print("we are here")
     global data
     forestData=[]
     cloudinary.config(
