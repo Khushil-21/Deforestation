@@ -157,6 +157,7 @@ function App() {
     }
   };
 
+  
   return (
     <div className={`App bg-blue-50 p-9 flex flex-col items-center w-full h-screen`}>
       <div className={`flex items-center ${clickedLocation ? 'justify-between' : 'justify-center'} w-full h-full`}>
