@@ -12,6 +12,7 @@ L.Icon.Default.mergeOptions({
 });
 
 const mapContainerStyle = {
+  width: '60vw',
   height: '80vh'
 };
 
@@ -36,10 +37,10 @@ function App() {
     lat = lat.toFixed(4) - 0;
     lng = lng.toFixed(4) - 0;
     const newBox = [
-      (lat + 0.05).toFixed(4),
-      (lng - 0.08).toFixed(4),
-      (lat - 0.05).toFixed(4),
-      (lng + 0.08).toFixed(4)
+      (lat + 0.07).toFixed(4),
+      (lng - 0.09).toFixed(4),
+      (lat - 0.07).toFixed(4),
+      (lng + 0.09).toFixed(4)
     ].map(Number);
     setBox(newBox);
     try {
@@ -53,8 +54,8 @@ function App() {
   };
 
   return (
-    <div className="App">
-      <MapContainer center={center} zoom={2} style={mapContainerStyle} maxBounds={[[-90, -180], [90, 180]]} minZoom={2}>
+    <div className="App flex flex-col items-center justify-center p-12">
+      <MapContainer className='rounded-xl overflow-hidden shadow-lg p-5' center={center} zoom={2} style={mapContainerStyle} maxBounds={[[-90, -180], [90, 180]]} minZoom={2}>
         <LayersControl position="topright">
           <LayersControl.BaseLayer checked name="OpenStreetMap">
             <TileLayer
@@ -74,7 +75,7 @@ function App() {
       </MapContainer>
       {clickedLocation && (
         <div>
-          <p>
+          <p className='text-2xl font-medium'>
             Clicked Location: Latitude: {clickedLocation.lat.toFixed(6)},
             Longitude: {clickedLocation.lng.toFixed(6)}
           </p>
