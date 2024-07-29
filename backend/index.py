@@ -1,13 +1,15 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
+from pydantic import BaseModel
+from typing import List, Optional
 import uvicorn
 import os
-import tensorflow as tf
-from tensorflow.keras.models import Model
+from typing import List
+# import tensorflow as tf
+# from tensorflow.keras.models import Model
 import numpy as np
 import cv2
 import ee
 import geemap
-import leafmap
 import matplotlib.pyplot as plt
 from sklearn.preprocessing import StandardScaler
 import keras
@@ -17,23 +19,33 @@ import cloudinary.uploader
 import cloudinary.api
 from PIL import Image
 import io
+from boy import generate_report
+from dotenv import load_dotenv
+load_dotenv()
 
 app = FastAPI()
+ee.Authenticate()
+ee.Initialize()
+l4 = ee.ImageCollection("LANDSAT/LT04/C02/T1_L2")
+l5 = ee.ImageCollection("LANDSAT/LT05/C02/T1_L2")
+l7 = ee.ImageCollection("LANDSAT/LE07/C02/T1_L2")
+l8 = ee.ImageCollection("LANDSAT/LC08/C02/T1_L2")
+l9 = ee.ImageCollection("LANDSAT/LC09/C02/T1_L2")
 
+data={}
+report=str()
+
+class BboxRequest(BaseModel):
+    bbox: List[float] = None
 
 def filter_col(col, roi, start_date, end_date):
     return col.filterBounds(roi).filterDate(start_date, end_date)
     
-def generateMasks(start_date,end_date,intermediate_layer_model,bbox=[-59.5026, 2.9965, -59.2035, 3.1899]):
+def generateMasks(start_date,end_date,i,intermediate_layer_model,bbox=[-59.5026, 2.9965, -59.2035, 3.1899]):
     
     # Define the collections
-    forestData=[]
+    global l4,l5,l6,l7,l8,l9
     roi = ee.Geometry.Rectangle(bbox)
-    l4 = ee.ImageCollection("LANDSAT/LT04/C02/T1_L2")
-    l5 = ee.ImageCollection("LANDSAT/LT05/C02/T1_L2")
-    l7 = ee.ImageCollection("LANDSAT/LE07/C02/T1_L2")
-    l8 = ee.ImageCollection("LANDSAT/LC08/C02/T1_L2")
-    l9 = ee.ImageCollection("LANDSAT/LC09/C02/T1_L2")
 
     # Helper function to filter collections
 
@@ -72,8 +84,8 @@ def generateMasks(start_date,end_date,intermediate_layer_model,bbox=[-59.5026, 2
     img_resized = np.expand_dims(img_resized, axis=0)
 
 
-    intermediate_output = intermediate_layer_model.predict(img_resized)
-    out=intermediate_output[0,:,:,0]
+    # intermediate_output = intermediate_layer_model.predict(img_resized)
+    # out=intermediate_output[0,:,:,0]
 
     binary_mask = np.where(scaled_data >= 125, 1, 0)
 
@@ -89,41 +101,60 @@ def generateMasks(start_date,end_date,intermediate_layer_model,bbox=[-59.5026, 2
     print(f"Forest Percentage: {forest_percentage:.2f}%")
     print(f"Land Percentage: {land_percentage:.2f}%")
 
-    forestData.append({'start_date':start_date,'end_date':end_date,'forest Area(%)':forest_percentage,'land_Area(%)':land_percentage,'img_url':response['url']})
-    return forestData
+    return {'year':i,'forest Area(%)':forest_percentage,'land_Area(%)':land_percentage,'img_url':response['url']}
+    # return forestData
 
 @app.get("/")
 def hello_world():
     return {"message": "Hello From Python Backend"}
 
+@app.get("/getBot")
+def getBot():
+    global data,report
+    resp=generate_report(data)
+    
+    myReport={
+        "message": "Api Called Success",
+        'report':resp
+    }
+    
+    if report!=myReport:
+        report=myReport
+        
+    return report
+
 @app.post("/api/get/history/{year}")
-async def get_history(year: int, bbox: list | None = None):
-    ee.Authenticate()
-    ee.Initialize()
+async def get_history(request: BboxRequest):
+    global data
+    forestData=[]
     cloudinary.config(
     cloud_name = 'dzqf5owza',  # Replace with your Cloudinary cloud name
     api_key = '831483217291572',        # Replace with your Cloudinary API key
-    api_secret = 'WZnkpFNMTxWMVV8o8QJfEXjjlVU'   # Replace with your Cloudinary API secret
+    api_secret = os.getenv("CLOUD_KEY")   # Replace with your Cloudinary API secret
     )
 
 
     keras.config.enable_unsafe_deserialization()
-    model = tf.keras.models.load_model("F:\\Maverick\\unet_model_final.keras")
+    # model = tf.keras.models.load_model("F:\\Maverick\\unet_model_final.keras")
     layer_name = 'conv2d_35'  # Replace with your layer of interest
-    intermediate_layer_model = Model(inputs=model.input, outputs=model.get_layer(layer_name).output)
-
-    bbox=bbox
-    year=year
-    start_date=ee.Date.fromYMD(year - 1,1,1)
-    end_date = ee.Date.fromYMD(year + 1,12,31)
-    data=generateMasks(start_date,end_date,intermediate_layer_model,bbox)
+    # intermediate_layer_model = Model(inputs=model.input, outputs=model.get_layer(layer_name).output)
+    intermediate_layer_model=None
+    print(request.bbox)
+    bbox=request.bbox
+    # year=year
+    for i in range(1984,2025,5):
+        start_date=ee.Date.fromYMD(i - 1,1,1)
+        end_date = ee.Date.fromYMD(i + 1,12,31)
+        forestData.append(generateMasks(start_date,end_date,i,intermediate_layer_model,bbox))
     
-    
-    return {
-        "message": f"Fetching history for year {year}",
-        "received_data": data,
-        "year": year
+    retFor={
+        "received_data": forestData,
     }
+    
+    if data!=retFor:
+        data=retFor
+        
+    return retFor
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
