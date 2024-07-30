@@ -227,7 +227,7 @@ function App() {
         )}
         {showModal && (
           <div
-            className="fixed z-[9999999999999999999999999999999999999999999] inset-0 bg-black bg-opacity-50 flex justify-center items-center modal-overlay"
+            className="fixed z-[999999] inset-0 bg-black bg-opacity-50 flex justify-center items-center modal-overlay"
             onClick={handleCloseModal}
           >
             <div className="bg-white p-6 rounded-lg max-w-2xl max-h-[80vh] overflow-auto">
