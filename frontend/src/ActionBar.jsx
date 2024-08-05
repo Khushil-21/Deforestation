@@ -27,7 +27,7 @@ export default function ActionBar({
 						{locationName}
 					</div>
 				</div>
-				<div className="p-4 bg-white rounded-xl shadow-lg w-[20%]">
+				{/* <div className="p-4 bg-white rounded-xl shadow-lg w-[20%]">
 					<select
 						value={selectedYear}
 						onChange={(e) => setSelectedYear(e.target.value)}
@@ -39,7 +39,7 @@ export default function ActionBar({
 							</option>
 						))}
 					</select>
-				</div>
+				</div> */}
 				<div
 					className="p-4 active:scale-95 cursor-pointer flex justify-center items-center text-xl font-semibold bg-blue-500 text-white rounded-xl shadow-lg w-[20%]"
 					onClick={onSearch}

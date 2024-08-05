@@ -1,4 +1,5 @@
 from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import List, Optional
 import uvicorn
@@ -24,8 +25,21 @@ from dotenv import load_dotenv
 load_dotenv()
 
 app = FastAPI()
+origins = [
+    "http://localhost:3000",
+    "http://localhost:5000",
+    "http://127.0.0.1:3000",
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"]
+)
 ee.Authenticate()
-ee.Initialize()
+ee.Initialize(project="ee-vinitchokshi1809")
 l4 = ee.ImageCollection("LANDSAT/LT04/C02/T1_L2")
 l5 = ee.ImageCollection("LANDSAT/LT05/C02/T1_L2")
 l7 = ee.ImageCollection("LANDSAT/LE07/C02/T1_L2")
@@ -125,7 +139,7 @@ def getBot():
 
 @app.post("/api/get/history/{year}")
 async def get_history(request: BboxRequest):
-    print("we are here")
+    print("we are here",request)
     global data
     forestData=[]
     cloudinary.config(
