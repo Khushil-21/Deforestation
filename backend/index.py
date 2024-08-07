@@ -143,7 +143,7 @@ def hello_world():
     return {"message": "Hello From Python Backend"}
 
 
-@app.get("/getBot")
+@app.post("/getBot")
 def getBot(data: dict):
     global report
     print(data)

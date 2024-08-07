@@ -205,7 +205,7 @@ function MainComponent() {
 						/>
 					</motion.div>
 				)}
-				{showModal && <ReportPopup handleCloseModal={handleCloseModal} />}
+				{showModal && <ReportPopup entireData={entireData} handleCloseModal={handleCloseModal} />}
 			</AnimatePresence>
 		</div>
 	);

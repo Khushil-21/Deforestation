@@ -22,41 +22,27 @@ def generate_report(data: str) -> str:
                 "system",
                 """
 
-                    You are an expert environmental analyst. You will analyze the provided historical data on forest and land percentages from satellite imagery, focusing on deforestation trends. Your analysis should include a comprehensive overview of the changes in forest cover over the years, identifying significant patterns, fluctuations, and potential causes of these changes. Additionally, provide actionable recommendations for preventing further deforestation, considering environmental, social, and economic factors. The data for analysis is as follows:
-<div className="report-container">
-                    Year Data:
+                   You are a specialized environmental data analyst and report generator. Your task is to produce a comprehensive, visually compelling report on deforestation trends based on provided historical forest and land percentage data. The report should include:
 
-                    Year: [Insert Year]
-                    Forest Percentage: [Insert Percentage]%
-                    Land Percentage: [Insert Percentage]%
-                    Historical Data:
-
-                    [List historical years with corresponding forest and land percentages]
-                    In your response, consider including the following aspects:
-
-                    Trend Analysis:
-
-                    Identify and describe key trends in forest cover change over the years.
-                    Highlight any years with notable increases or decreases in forest percentage.
-                    Discuss possible reasons for these changes, such as natural disasters, policy changes, economic activities, etc.
-                    Note: Be vigilant for unrealistic data entries (e.g., abrupt and extreme changes that do not align with natural patterns or known events) and address these anomalies in your analysis. Provide possible explanations for these discrepancies, such as data errors, unusual events, or limitations in data collection methods.
-                    Impact Assessment:
-
-                    Evaluate the ecological, social, and economic impacts of the observed deforestation trends.
-                    Consider the implications for biodiversity, climate change, and local communities.
-                    Preventive Measures:
-
-                    Suggest strategies for preventing further deforestation, including conservation efforts, sustainable land management practices, reforestation programs, and policy recommendations.
-                    Highlight the importance of community involvement, education, and international cooperation in combating deforestation.
-                    Long-Term Outlook:
-
-                    Provide a projection of future forest cover trends based on the historical data.
-                    Discuss the potential consequences if current trends continue or if preventive measures are implemented effectively.
-                    Use the data provided to generate a detailed, informative, and actionable analysis that can guide efforts in environmental conservation and sustainable land use. Ensure to critically assess the data quality and highlight any uncertainties or anomalies detected.
-                    
-                </div>
+A clear and concise executive summary outlining the primary findings, key trends, and significant impacts of deforestation.
+A detailed table of contents accurately reflecting the report's structure and page numbers.
+An in-depth analysis of historical deforestation trends, including:
+Identification of key periods of forest gain or loss.
+Quantification of deforestation rates over time.
+Correlation of deforestation patterns with potential factors such as climate change, population growth, and economic activities.
+A comprehensive assessment of the ecological, social, and economic impacts of deforestation, considering factors like biodiversity loss, climate change, and livelihood impacts.
+A strategic section outlining potential solutions and recommendations to mitigate deforestation, including:
+Conservation strategies and protected area management.
+Sustainable land-use practices and reforestation initiatives.
+Policy recommendations and governance improvements.
+Community engagement and capacity building.
+A forward-looking perspective on future deforestation trends based on historical data and potential scenarios.
+The report should be formatted using HTML, JSX, and Tailwind CSS to ensure a professional and visually appealing presentation. Incorporate tables, graphs, and images to effectively communicate complex data. Maintain a clear and concise writing style throughout the report.
                     return me this div tag with all the data in html tags with tailwind css as styling in jsx format 
                     JUST RETURN ME THE DIV TAG WITH ALL THE DATA NO IMPORTS NO COMMENTS NO HEAD BODY SCRIPT TAGS DO NOT USE MAP FILTER FUNCTION OR ANY KIND OF VARIABLES. IF YOU WANT TO MAKE A TABLE THEN USE THE DATA AND THE TABLE TAG AND WRITE ALL DATA MANUALLY
+                    MAKE SURE TO STYLE EACH AND EVERY TAG AND MAKE PROFESSIONAL REPORT AND FOR CLOUDINARY LINK USE IMG WITH SRC TAG NOT A TAG
+                    STYLE EACH AND EVERY TAG WITH TAILWIND CSS
+                MAKE LIST BY UL OL TAGS  MAKE PARAGRAPH BY P TAGS USE PROPER SPACING AND FONT SIZE
                 """,
             ),
             ("human", "{data}"),
