@@ -3,7 +3,7 @@ import MainComponent from './components/MainComponent';
 import EntryComponent from './components/EntryComponent';
 
 function App() {
-  const [showMainComponent, setShowMainComponent] = useState(true);
+  const [showMainComponent, setShowMainComponent] = useState(false);
 
   useEffect(() => {
     const timer = setTimeout(() => {
