@@ -5,6 +5,7 @@ import MapComponent from "./MapComponent";
 import ResponseComponent from "./ResponseComponent";
 import ActionBar from "./ActionBar";
 import ReportPopup from "./ReportPopup";
+import ChatComponent from "./ChatComponent";
 
 const initialMapContainerStyle = {
 	width: "60vw",
@@ -37,6 +38,8 @@ function MainComponent() {
 			setMapContainerStyle(initialMapContainerStyle);
 		}
 	}, [clickedLocation]);
+
+	
 
 	const updateLocationName = async (lat, lng) => {
 		try {
@@ -135,6 +138,9 @@ function MainComponent() {
 		}
 	};
 
+	
+
+
 	return (
 		<div
 			className={`App bg-blue-50 p-9 gap-5 flex flex-col items-center w-full h-screen`}
@@ -207,6 +213,7 @@ function MainComponent() {
 				)}
 				{showModal && <ReportPopup entireData={entireData} handleCloseModal={handleCloseModal} />}
 			</AnimatePresence>
+
 		</div>
 	);
 }
