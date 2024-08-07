@@ -31,6 +31,7 @@ print(os.getenv("GROQ_API_KEY"))
 report = []
 app = FastAPI()
 origins = [
+    "https://deforestation-frontend.vercel.app",
     "http://localhost:3000",
     "http://localhost:5000",
     "http://127.0.0.1:3000",
