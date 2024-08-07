@@ -53,11 +53,13 @@ function ResponseComponent({ isLoading, historyData, handleViewReport, setReport
         </div>
       ) : (
         <div className="w-full h-full rounded-xl flex flex-col">
-          <img
-            src={selectedData?.img_url}
-            alt="forest"
-            className="flex-grow rounded-xl"
-          />
+          <div className="h-[80%] rounded-xl overflow-hidden">
+            <img
+              src={selectedData?.img_url}
+              alt="forest"
+              className="w-full h-full object-cover"
+            />
+          </div>
           <div className="h-20 flex justify-center items-center gap-10 rounded-xl overflow-hidden">
             <div className="p-4 bg-white rounded-xl shadow-lg">
               <select

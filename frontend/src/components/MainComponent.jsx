@@ -28,8 +28,8 @@ function MainComponent() {
 	const [historyData, setHistoryData] = useState(null);
 	const [boundingBox, setBoundingBox] = useState([]);
 	const [showModal, setShowModal] = useState(false);
-  const [report, setReport] = useState("");
-  const [entireData, setEntireData] = useState(null);
+	const [report, setReport] = useState("");
+	const [entireData, setEntireData] = useState(null);
 
 	useEffect(() => {
 		if (clickedLocation) {
@@ -38,10 +38,6 @@ function MainComponent() {
 			setMapContainerStyle(initialMapContainerStyle);
 		}
 	}, [clickedLocation]);
-
-	
-
-	
 
 	const updateLocationName = async (lat, lng) => {
 		try {
@@ -76,10 +72,10 @@ function MainComponent() {
 		lat = lat.toFixed(4) - 0;
 		lng = lng.toFixed(4) - 0;
 		const newBox = [
-			(lng - 0.2991).toFixed(4),
-			(lat + 0.0059).toFixed(4),
-			(lng + 0.2991).toFixed(4),
-			(lat - 0.0059).toFixed(4),
+			(lng - 0.2).toFixed(4),
+			(lat - 0.2).toFixed(4),
+			(lng + 0.2).toFixed(4),
+			(lat + 0.2).toFixed(4),
 		].map(Number);
 		setBox(newBox);
 		try {
@@ -116,8 +112,8 @@ function MainComponent() {
 					bbox: box,
 				})
 				.then((data) => {
-          console.log(data);
-          setEntireData(data.data);
+					console.log(data);
+					setEntireData(data.data);
 					setHistoryData(data.data.received_data);
 					setIsLoading(false);
 				})
@@ -139,9 +135,6 @@ function MainComponent() {
 			setShowModal(false);
 		}
 	};
-
-	
-
 
 	return (
 		<div
@@ -213,9 +206,13 @@ function MainComponent() {
 						/>
 					</motion.div>
 				)}
-				{showModal && <ReportPopup entireData={entireData} handleCloseModal={handleCloseModal} />}
+				{showModal && (
+					<ReportPopup
+						entireData={entireData}
+						handleCloseModal={handleCloseModal}
+					/>
+				)}
 			</AnimatePresence>
-
 		</div>
 	);
 }
