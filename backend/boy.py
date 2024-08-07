@@ -14,8 +14,9 @@ def generate_report(data: str) -> str:
     print("data: ", data)
     # return data
     # data=data['data']
-    data = data["received_data"].__str__()
-
+    data = data["data"].__str__()
+    # data=data["received_data"].__str__()
+    # data=data+
     prompt = ChatPromptTemplate.from_messages(
         [
             (
@@ -71,3 +72,39 @@ def generate_report(data: str) -> str:
     response = chain.invoke({"data": data})
     print("response: ", response)
     return response
+
+
+
+
+def chatbot(message1: str, report: str) -> str:
+    """Simulate a chatbot conversation based on the generated report."""
+    # print(message1)
+    # print(type(message1))
+    # print(report)
+    # print(type(report))
+    chat_bot_prompt = ChatPromptTemplate.from_messages(
+        [
+            (
+                "system",
+                f"""
+                    You are an expert conversational AI chatbot. 
+                    You will engage in a conversation with a user who is seeking information on deforestation trends and preventive measures. 
+                    The user will ask you questions related to the given report. 
+                    Your responses should be informative, engaging, and tailored to the user's queries. 
+                    Your responses should be bref and to the point.
+                    Response length should 3-4 sentences.
+                    The given report is as follows:
+                    {report['report']}
+                """
+            ),
+
+            ("human", "{message}"),
+        ]
+    )
+
+    chat_bot = ChatGroq(temperature=0, groq_api_key=os.environ.get("GROQ_API_KEY"), model_name="llama3-8b-8192")
+    chat_bot_chain = chat_bot_prompt | chat_bot | StrOutputParser()
+    
+    res = chat_bot_chain.invoke({"message": message1})
+    return res
+    
