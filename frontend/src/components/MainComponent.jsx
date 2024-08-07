@@ -41,6 +41,8 @@ function MainComponent() {
 
 	
 
+	
+
 	const updateLocationName = async (lat, lng) => {
 		try {
 			const response = await fetch(
