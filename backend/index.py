@@ -5,16 +5,12 @@ from typing import List, Optional
 import uvicorn
 import os
 from typing import List
-from fastapi.middleware.cors import CORSMiddleware
-import tensorflow as tf
-from tensorflow.keras.models import Model
 import numpy as np
 import cv2
 import ee
 import geemap
 import matplotlib.pyplot as plt
 from sklearn.preprocessing import StandardScaler
-import keras
 import pandas as pd
 import cloudinary
 import cloudinary.uploader
@@ -71,7 +67,6 @@ def generateMasks(
     start_date,
     end_date,
     i,
-    intermediate_layer_model,
     bbox=[-59.5026, 2.9965, -59.2035, 3.1899],
 ):
 
@@ -115,11 +110,6 @@ def generateMasks(
     scaled_data *= 255
 
     img_resized = cv2.resize(scaled_data, (512, 512))
-    img_resized = np.expand_dims(img_resized, axis=-1)
-    img_resized = np.expand_dims(img_resized, axis=0)
-
-    # intermediate_output = intermediate_layer_model.predict(img_resized)
-    # out=intermediate_output[0,:,:,0]
 
     binary_mask = np.where(scaled_data >= 125, 1, 0)
 
@@ -140,7 +130,6 @@ def generateMasks(
         "land_Area(%)": land_percentage,
         "img_url": response["url"],
     }
-    # return forestData
 
 
 @app.get("/")
@@ -173,25 +162,18 @@ async def get_history(request: BboxRequest):
         api_secret=os.getenv("CLOUD_KEY"),  # Replace with your Cloudinary API secret
     )
 
-    keras.config.enable_unsafe_deserialization()
-    # model = tf.keras.models.load_model("F:\\Maverick\\unet_model_final.keras")
-    layer_name = "conv2d_35"  # Replace with your layer of interest
-    # intermediate_layer_model = Model(inputs=model.input, outputs=model.get_layer(layer_name).output)
-    intermediate_layer_model = None
     print(request.bbox)
     bbox = request.bbox
-    # year=year
     for i in range(1984, 2025, 5):
         start_date = ee.Date.fromYMD(i - 1, 1, 1)
         end_date = ee.Date.fromYMD(i + 1, 12, 31)
         forestData.append(
-            generateMasks(start_date, end_date, i, intermediate_layer_model, bbox)
+            generateMasks(start_date, end_date, i, bbox)
         )
 
     retFor = {
         "received_data": forestData,
     }
-    # report=forestData
 
     if data != retFor:
         data = retFor

@@ -2,9 +2,7 @@ fastapi
 uvicorn
 earthengine-api
 geemap
-keras==3.4.1
 leafmap
-tensorflow==2.17.0
 numpy==1.26.4
 opencv-python
 scikit-learn
