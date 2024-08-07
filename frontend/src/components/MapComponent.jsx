@@ -8,6 +8,7 @@ import {
 } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
+import { motion } from "framer-motion";
 
 // Fix for default marker icon
 delete L.Icon.Default.prototype._getIconUrl;

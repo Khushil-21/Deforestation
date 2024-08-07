@@ -146,6 +146,7 @@ def hello_world():
 @app.get("/getBot")
 def getBot():
     global data, report
+    print(data)
     resp = generate_report(data)
 
     myReport = {"message": "Api Called Success", "report": resp}

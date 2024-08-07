@@ -7,7 +7,7 @@ import ActionBar from "./ActionBar";
 
 const initialMapContainerStyle = {
 	width: "60vw",
-	height: "90vh",
+	height: "85vh",
 };
 
 const selectedMapContainerStyle = {
@@ -61,7 +61,10 @@ function MainComponent() {
 
 	const handleMapClick = async (event) => {
 		let { lat, lng } = event.latlng;
-		setClickedLocation({ lat: Number(lat.toFixed(4)), lng: Number(lng.toFixed(4)) });
+		setClickedLocation({
+			lat: Number(lat.toFixed(4)),
+			lng: Number(lng.toFixed(4)),
+		});
 		console.log(`Latitude: ${lat}, Longitude: ${lng}`);
 		lat = lat.toFixed(4) - 0;
 		lng = lng.toFixed(4) - 0;
@@ -131,8 +134,20 @@ function MainComponent() {
 
 	return (
 		<div
-			className={`App bg-blue-50 p-9 flex flex-col items-center w-full h-screen`}
+			className={`App bg-blue-50 p-9 gap-5 flex flex-col items-center w-full h-screen`}
 		>
+			<AnimatePresence>
+				{!clickedLocation && (
+					<motion.h1
+						className="text-4xl font-bold"
+						initial={{ opacity: 0 }}
+						animate={{ opacity: 1 }}
+						exit={{ opacity: 0 }}
+					>
+						Select a location on the map
+					</motion.h1>
+				)}
+			</AnimatePresence>
 			<div
 				className={`flex items-center ${
 					clickedLocation ? "justify-between" : "justify-center"
@@ -142,8 +157,8 @@ function MainComponent() {
 					layout
 					initial={initialMapContainerStyle}
 					animate={mapContainerStyle}
-					transition={{ duration: 0.5, ease: "easeInOut" }}
-					className="w-full h-full"
+					transition={{ duration: 0.4, ease: "easeInOut" }}
+					className="w-full h-full flex flex-col items-center justify-center gap-10"
 				>
 					<MapComponent
 						clickedLocation={clickedLocation}
@@ -156,7 +171,7 @@ function MainComponent() {
 						<motion.div
 							initial={{ x: "100%" }}
 							animate={{ x: 0 }}
-							transition={{ duration: 0.5, ease: "easeInOut" }}
+							transition={{ duration: 0.6, ease: "easeInOut" }}
 						>
 							<ResponseComponent
 								isLoading={isLoading}
