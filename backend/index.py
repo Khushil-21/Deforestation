@@ -44,7 +44,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 ee.Authenticate()
-ee.Initialize()
+ee.Initialize(project="ee-vinitchokshi1809")
 l4 = ee.ImageCollection("LANDSAT/LT04/C02/T1_L2")
 l5 = ee.ImageCollection("LANDSAT/LT05/C02/T1_L2")
 l7 = ee.ImageCollection("LANDSAT/LE07/C02/T1_L2")
@@ -197,7 +197,7 @@ async def get_history(request: BboxRequest):
 
     return retFor
 
-@app.post('/getAnswerBot')
+@app.post('/api/getAnswerBot')
 async def getAnswerBot(request:QnaRequest):
     global report
     chat=chatbot(request.question,report)

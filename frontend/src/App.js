@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import MainComponent from './components/MainComponent';
-import EntryComponent from './components/EntryComponent';
+import MainComponent from './Components/MainComponent';
+import EntryComponent from './Components/EntryComponent';
 
 function App() {
   const [showMainComponent, setShowMainComponent] = useState(true);
@@ -15,7 +15,7 @@ function App() {
 
   return (
     <>
-      {showMainComponent ? <MainComponent /> : <EntryComponent />}
+      {showMainComponent ? <MainComponent/> : <EntryComponent />}
     </>
   );
 }
