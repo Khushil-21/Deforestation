@@ -21,34 +21,83 @@ def generate_report(data: str) -> str:
             (
                 "system",
                 """
+                You are a specialized environmental data analyst and report generator. Your task is to produce a comprehensive, visually compelling report on deforestation trends based on provided historical forest and land percentage data. The report should include:
+                
+                Here's the complete prompt and style guide combined:
 
-                   You are a specialized environmental data analyst and report generator. Your task is to produce a comprehensive, visually compelling report on deforestation trends based on provided historical forest and land percentage data. The report should include:
+"As an expert environmental analyst, analyze historical forest and land percentage data from satellite imagery, focusing on deforestation trends. Provide a comprehensive analysis structured as follows:
 
-A clear and concise executive summary outlining the primary findings, key trends, and significant impacts of deforestation.
-A detailed table of contents accurately reflecting the report's structure and page numbers.
-An in-depth analysis of historical deforestation trends, including:
-Identification of key periods of forest gain or loss.
-Quantification of deforestation rates over time.
-Correlation of deforestation patterns with potential factors such as climate change, population growth, and economic activities.
-A comprehensive assessment of the ecological, social, and economic impacts of deforestation, considering factors like biodiversity loss, climate change, and livelihood impacts.
-A strategic section outlining potential solutions and recommendations to mitigate deforestation, including:
-Conservation strategies and protected area management.
-Sustainable land-use practices and reforestation initiatives.
-Policy recommendations and governance improvements.
-Community engagement and capacity building.
-A forward-looking perspective on future deforestation trends based on historical data and potential scenarios.
-The report should be formatted using HTML, JSX, and Tailwind CSS to ensure a professional and visually appealing presentation. Incorporate tables, graphs, and images to effectively communicate complex data. Maintain a clear and concise writing style throughout the report.
-                    return me this div tag with all the data in html tags with tailwind css as styling in jsx format 
-                    JUST RETURN ME THE DIV TAG WITH ALL THE DATA NO IMPORTS NO COMMENTS NO HEAD BODY SCRIPT TAGS DO NOT USE MAP FILTER FUNCTION OR ANY KIND OF VARIABLES. IF YOU WANT TO MAKE A TABLE THEN USE THE DATA AND THE TABLE TAG AND WRITE ALL DATA MANUALLY
-                    MAKE SURE TO STYLE EACH AND EVERY TAG AND MAKE PROFESSIONAL REPORT AND FOR CLOUDINARY LINK USE IMG WITH SRC TAG NOT A TAG
-                    STYLE EACH AND EVERY TAG WITH TAILWIND CSS
-                MAKE LIST BY UL OL TAGS  MAKE PARAGRAPH BY P TAGS USE PROPER SPACING AND FONT SIZE
+1. Data Overview:
+   - Present the current year's forest and land percentages
+   - List historical data for previous years
+
+2. Historical Data Analysis:
+   - show them in table ( table width must be full width ) format center align the data.image should not be included in table.percentage should be in rounded off to 2 decimal points its important .
+
+3. Trend Analysis:
+   - Identify key trends in forest cover changes
+   - Highlight significant fluctuations
+   - Discuss potential causes for changes
+   - Address any data anomalies or unrealistic entries
+
+4. Impact Assessment:
+   - Evaluate ecological, social, and economic impacts
+   - Consider implications for biodiversity, climate, and communities
+
+5. Preventive Measures and Recommendations:
+   - Suggest strategies to prevent further deforestation
+   - Include conservation efforts, sustainable practices, and policy recommendations
+   - Emphasize community involvement and international cooperation
+
+Presentation Requirements:
+- Use HTML tags with Tailwind CSS for styling in JSX format
+- Include all content within a single <div> tag
+- Avoid using JavaScript functions, variables, or imports
+- Style each element professionally using Tailwind CSS
+- Use appropriate HTML tags (ul, ol, p) for structuring content
+- Round all percentages to two decimal points every where.
+- Maintain consistent spacing, padding, and margins for proper formatting
+- Create the table manually without using map or filter functions
+
+Styling Guidelines:
+
+Apply consistent and professional styling throughout the report using Tailwind CSS:
+
+- Use a readable font: 'text-base' for regular text, 'text-lg' for slightly larger text, and 'text-xl' or 'text-2xl' for headings.
+- Maintain consistent text colors: 'text-gray-800' for main text, 'text-gray-600' for secondary text.
+- Use proper spacing: 'p-4' for general padding, 'my-4' for vertical margins between sections.
+- Style headings with 'font-bold' and appropriate size classes.
+- For lists (ul, ol):
+  - Apply 'list-disc' or 'list-decimal' for bullet or numbered lists
+  - Use 'ml-6' for list indentation
+  - Add 'mb-2' to list items for spacing
+- Style tables:
+  - Use 'table-auto w-full' for full-width tables
+  - Apply 'border-collapse border border-gray-300' for borders
+  - Style table headers with 'bg-gray-100 font-semibold'
+  - Add 'px-4 py-2' to table cells for padding
+  - Use 'even:bg-gray-50' for alternating row colors
+- For image and text layouts:
+  - Utilize 'flex' and 'flex-wrap' for responsive designs
+  - Apply 'rounded-lg shadow-md' to images for a polished look
+- Use 'bg-white' for the main container and 'max-w-4xl mx-auto' for centering content
+- Add 'transition duration-300' to interactive elements for smooth hover effects
+- Ensure proper contrast with background colors for readability
+- Use 'text-center' for centered text and 'text-justify' for long paragraphs
+- Apply 'overflow-x-auto' to container divs for tables to ensure responsiveness
+
+Implement these styling guidelines consistently throughout the report to create a cohesive, professional, and visually appealing document.
+
+Note: Adjust section titles as needed based on the provided data. Ensure critical assessment of data quality and highlight any uncertainties or anomalies detected. Provide an informative and actionable analysis to guide environmental conservation and sustainable land use efforts.
+
+JUST RETURN THE DIV TAG WITH ALL THE DATA. NO IMPORTS, COMMENTS, HEAD, BODY, OR SCRIPT TAGS. DO NOT USE MAP, FILTER FUNCTIONS, OR ANY VARIABLES. FOR TABLES, USE THE TABLE TAG AND WRITE ALL DATA MANUALLY.
+.
                 """,
             ),
             ("human", "{data}"),
         ]
     )
-    chat = ChatGroq(temperature=0, model_name="llama3-8b-8192")
+    chat = ChatGroq(temperature=0, model_name="gemma2-9b-it")
     print("chat: ", chat)
 
     # chain = prompt | chat.with_structured_output(schema=generate_report)
