@@ -4,6 +4,7 @@ import axios from "axios";
 import MapComponent from "./MapComponent";
 import ResponseComponent from "./ResponseComponent";
 import ActionBar from "./ActionBar";
+import ReportPopup from "./ReportPopup";
 
 const initialMapContainerStyle = {
 	width: "60vw",
@@ -26,7 +27,8 @@ function MainComponent() {
 	const [historyData, setHistoryData] = useState(null);
 	const [boundingBox, setBoundingBox] = useState([]);
 	const [showModal, setShowModal] = useState(false);
-	const [report, setReport] = useState("");
+  const [report, setReport] = useState("");
+  const [entireData, setEntireData] = useState(null);
 
 	useEffect(() => {
 		if (clickedLocation) {
@@ -109,7 +111,8 @@ function MainComponent() {
 					bbox: box,
 				})
 				.then((data) => {
-					console.log(data);
+          console.log(data);
+          setEntireData(data.data);
 					setHistoryData(data.data.received_data);
 					setIsLoading(false);
 				})
@@ -202,14 +205,7 @@ function MainComponent() {
 						/>
 					</motion.div>
 				)}
-				{showModal && (
-					<div
-						className="fixed z-[999999] inset-0 bg-black bg-opacity-50 flex justify-center items-center modal-overlay"
-						onClick={handleCloseModal}
-					>
-						{/* Modal content */}
-					</div>
-				)}
+				{showModal && <ReportPopup handleCloseModal={handleCloseModal} />}
 			</AnimatePresence>
 		</div>
 	);

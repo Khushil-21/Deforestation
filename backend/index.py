@@ -144,8 +144,8 @@ def hello_world():
 
 
 @app.get("/getBot")
-def getBot():
-    global data, report
+def getBot(data: dict):
+    global report
     print(data)
     resp = generate_report(data)
 

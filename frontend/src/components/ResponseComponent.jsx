@@ -82,7 +82,7 @@ function ResponseComponent({ isLoading, historyData, handleViewReport, setReport
               className="px-2 py-2  rounded-xl cursor-pointer bg-blue-600/20 border border-blue-600 text-blue-600 font-semibold"
               onClick={handleViewReport}
             >
-              View Report
+              Generate Report
             </div>
           </div>
         </div>

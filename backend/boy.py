@@ -1,17 +1,21 @@
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_groq import ChatGroq
-from langchain_core.output_parsers import StrOutputParser
+from langchain_core.output_parsers import StrOutputParser, XMLOutputParser
 from typing import List, Optional
-from langchain_core.pydantic_v1 import BaseModel,Field
+from langchain_core.pydantic_v1 import BaseModel, Field
 import os
 from dotenv import load_dotenv
+
 load_dotenv()
+
+
 def generate_report(data: str) -> str:
     """Generate a report based on the data of deforestation."""
+    print("data: ", data)
     # return data
     # data=data['data']
-    data = data['received_data'].__str__()
-    
+    data = data["received_data"].__str__()
+
     prompt = ChatPromptTemplate.from_messages(
         [
             (
@@ -19,7 +23,7 @@ def generate_report(data: str) -> str:
                 """
 
                     You are an expert environmental analyst. You will analyze the provided historical data on forest and land percentages from satellite imagery, focusing on deforestation trends. Your analysis should include a comprehensive overview of the changes in forest cover over the years, identifying significant patterns, fluctuations, and potential causes of these changes. Additionally, provide actionable recommendations for preventing further deforestation, considering environmental, social, and economic factors. The data for analysis is as follows:
-
+<div className="report-container">
                     Year Data:
 
                     Year: [Insert Year]
@@ -50,16 +54,20 @@ def generate_report(data: str) -> str:
                     Discuss the potential consequences if current trends continue or if preventive measures are implemented effectively.
                     Use the data provided to generate a detailed, informative, and actionable analysis that can guide efforts in environmental conservation and sustainable land use. Ensure to critically assess the data quality and highlight any uncertainties or anomalies detected.
                     
-                """
+                </div>
+                    return me this div tag with all the data in html tags with tailwind css as styling in jsx format 
+                    JUST RETURN ME THE DIV TAG WITH ALL THE DATA NO IMPORTS NO COMMENTS NO HEAD BODY SCRIPT TAGS DO NOT USE MAP FILTER FUNCTION OR ANY KIND OF VARIABLES. IF YOU WANT TO MAKE A TABLE THEN USE THE DATA AND THE TABLE TAG AND WRITE ALL DATA MANUALLY
+                """,
             ),
-
             ("human", "{data}"),
         ]
     )
     chat = ChatGroq(temperature=0, model_name="llama3-8b-8192")
+    print("chat: ", chat)
 
     # chain = prompt | chat.with_structured_output(schema=generate_report)
     chain = prompt | chat | StrOutputParser()
 
     response = chain.invoke({"data": data})
+    print("response: ", response)
     return response
