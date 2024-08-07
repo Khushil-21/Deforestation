@@ -156,7 +156,7 @@ def getBot():
     return report
 
 
-@app.post("/api/get/history/{year}")
+@app.post("/api/get/history")
 async def get_history(request: BboxRequest):
     print("we are here", request)
     global data
