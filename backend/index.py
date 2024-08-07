@@ -21,14 +21,14 @@ import cloudinary.uploader
 import cloudinary.api
 from PIL import Image
 import io
-from boy import generate_report,chatbot
+from boy import generate_report, chatbot
 from dotenv import load_dotenv
 
 load_dotenv()
 
 print(os.getenv("CLOUD_KEY"))
 print(os.getenv("GROQ_API_KEY"))
-report=[]
+report = []
 app = FastAPI()
 origins = [
     "http://localhost:3000",
@@ -44,7 +44,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 ee.Authenticate()
-ee.Initialize()
+ee.Initialize(project="ee-khushilshah2105")
 l4 = ee.ImageCollection("LANDSAT/LT04/C02/T1_L2")
 l5 = ee.ImageCollection("LANDSAT/LT05/C02/T1_L2")
 l7 = ee.ImageCollection("LANDSAT/LE07/C02/T1_L2")
@@ -57,7 +57,8 @@ report = str()
 
 class BboxRequest(BaseModel):
     bbox: List[float] = None
-    
+
+
 class QnaRequest(BaseModel):
     question: str = None
 
@@ -197,11 +198,12 @@ async def get_history(request: BboxRequest):
 
     return retFor
 
-@app.post('/api/getAnswerBot')
-async def getAnswerBot(request:QnaRequest):
+
+@app.post("/api/getAnswerBot")
+async def getAnswerBot(request: QnaRequest):
     global report
-    chat=chatbot(request.question,report)
-    
+    chat = chatbot(request.question, report)
+
     return chat
 
 

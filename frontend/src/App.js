@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import MainComponent from './Components/MainComponent';
-import EntryComponent from './Components/EntryComponent';
+import MainComponent from './components/MainComponent';
+import EntryComponent from './components/EntryComponent';
 
 function App() {
   const [showMainComponent, setShowMainComponent] = useState(false);
