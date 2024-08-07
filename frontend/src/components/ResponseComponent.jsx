@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import ChatComponent from './ChatComponent';
 
 function ResponseComponent({ isLoading, historyData, handleViewReport, setReport, setShowModal }) {
   const [selectedYear, setSelectedYear] = useState(2019);
@@ -85,6 +86,9 @@ function ResponseComponent({ isLoading, historyData, handleViewReport, setReport
               Generate Report
             </div>
           </div>
+      <div>
+				<ChatComponent/>
+			</div>	
         </div>
       )}
     </div>

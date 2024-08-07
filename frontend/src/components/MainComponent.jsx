@@ -214,9 +214,6 @@ function MainComponent() {
 				{showModal && <ReportPopup entireData={entireData} handleCloseModal={handleCloseModal} />}
 			</AnimatePresence>
 
-			<div>
-				<ChatComponent  />
-			</div>
 		</div>
 	);
 }

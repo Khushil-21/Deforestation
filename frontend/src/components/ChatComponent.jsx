@@ -2,22 +2,24 @@ import axios from 'axios';
 import React, { useState } from 'react';
 
 const ChatComponent = () => {
-  const [isChatboxOpen, setIsChatboxOpen] = useState(true);
+  const [isChatboxOpen, setIsChatboxOpen] = useState(false);
   const [messages, setMessages] = useState([
     { text: 'hello', user: true },
     { text: 'This is a response from the chatbot.', user: false },
-    { text: 'this example of chat', user: true },
-    { text: 'This is a response from the chatbot.', user: false },
-    { text: 'design with tailwind', user: true },
-    { text: 'This is a response from the chatbot.', user: false }
+
   ]);
 
   
 
   const chatBot=(data)=>{
+    // setMessages([...messages,{text:data,user:true}]);
     axios.post("http://localhost:5000/api/getAnswerBot",{"question":data}).then((data)=>{
-        console.log(data);
-        // setMessages([...messages,data.data])
+        console.log(data.data);
+        // setMessages([...messages,{text:data.data,user:false}])
+        setMessages((prevMessages) => [
+            ...prevMessages,
+            { text: data.data, user: false }
+          ]);
     }).catch((err)=>{
         console.log(err);
     })
@@ -30,7 +32,7 @@ const ChatComponent = () => {
 
   const addUserMessage = (message) => {
     setMessages([...messages, { text: message, user: true }]);
-    respondToUser(message);
+    // respondToUser(message);
   };
 
   const respondToUser = (message) => {
@@ -68,7 +70,7 @@ const ChatComponent = () => {
           <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
           </svg>
-          Chat with Admin Bot
+          Chat with Bot
         </button>
       </div>
       {isChatboxOpen && (

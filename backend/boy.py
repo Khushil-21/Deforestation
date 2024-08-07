@@ -14,8 +14,8 @@ def generate_report(data: str) -> str:
     print("data: ", data)
     # return data
     # data=data['data']
-    data = data["data"].__str__()
-    # data=data["received_data"].__str__()
+    # data = data["data"].__str__()
+    data=data["received_data"].__str__()
     # data=data+
     prompt = ChatPromptTemplate.from_messages(
         [

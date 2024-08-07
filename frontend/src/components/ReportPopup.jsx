@@ -9,6 +9,7 @@ export default function ReportPopup({ handleCloseModal, entireData }) {
 	useEffect(() => {
 		const fetchData = async () => {
 			setIsLoading(true);
+			console.log(entireData)
 			try {
 				const response = await axios.post(
 					"http://localhost:5000/getBot",
