@@ -9,20 +9,40 @@ const ChatComponent = () => {
 			user: false,
 		},
 	]);
+	const [streamingMessage, setStreamingMessage] = useState("");
+	const [isStreaming, setIsStreaming] = useState(false);
 	const chatContainerRef = useRef(null);
+	const chatboxRef = useRef(null);
 
 	const chatBot = (data) => {
+		setIsStreaming(true);
+		setStreamingMessage(""); // Clear previous streaming message
 		axios
 			.post("http://localhost:5000/api/getAnswerBot", { question: data })
-			.then((data) => {
-				console.log(data.data);
-				setMessages((prevMessages) => [
-					...prevMessages,
-					{ text: data.data, user: false },
-				]);
+			.then((response) => {
+				const botResponse = response.data;
+				let i = -1;
+				const streamInterval = setInterval(() => {
+					if (i < botResponse.length) {
+						setStreamingMessage((prev) => prev + botResponse[i]);
+						i++;
+						if (chatboxRef.current) {
+							chatboxRef.current.scrollTop = chatboxRef.current.scrollHeight;
+						}
+					} else {
+						clearInterval(streamInterval);
+						setMessages((prevMessages) => [
+							...prevMessages,
+							{ text: botResponse, user: false },
+						]);
+						setStreamingMessage("");
+						setIsStreaming(false);
+					}
+				}, 20);
 			})
 			.catch((err) => {
 				console.log(err);
+				setIsStreaming(false);
 			});
 	};
 	const [userInput, setUserInput] = useState("");
@@ -64,6 +84,12 @@ const ChatComponent = () => {
 			document.removeEventListener("mousedown", handleClickOutside);
 		};
 	}, []);
+
+	useEffect(() => {
+		if (chatboxRef.current) {
+			chatboxRef.current.scrollTop = chatboxRef.current.scrollHeight;
+		}
+	}, [messages, streamingMessage]);
 
 	return (
 		<div>
@@ -121,7 +147,11 @@ const ChatComponent = () => {
 									</svg>
 								</button>
 							</div>
-							<div id="chatbox" className="p-8 flex-grow overflow-y-auto">
+							<div
+								id="chatbox"
+								ref={chatboxRef}
+								className="p-8 flex-grow overflow-y-auto"
+							>
 								{messages.map((message, index) => (
 									<div
 										key={index}
@@ -138,6 +168,27 @@ const ChatComponent = () => {
 										</p>
 									</div>
 								))}
+								{isStreaming && (
+									<div className="mb-2">
+										<p
+											className={`rounded-lg py-2 px-4 ${
+												streamingMessage.length === 0
+													? "animate-pulse flex items-center justify-center h-10 w-20"
+													: ""
+											}  inline-block max-w-[70%] bg-gray-200 text-gray-700`}
+										>
+											{streamingMessage.length === 0 ? (
+												<div className="flex items-center justify-center !w-fit space-x-1">
+													<div className="w-2 h-2 bg-gray-700 rounded-full animate-bounce"></div>
+													<div className="w-2 h-2 bg-gray-700 rounded-full animate-bounce animation-delay-2000"></div>
+													<div className="w-2 h-2 bg-gray-700 rounded-full animate-bounce animation-delay-400"></div>
+												</div>
+											) : (
+												<>{streamingMessage}</>
+											)}
+										</p>
+									</div>
+								)}
 							</div>
 							<div className="p-4 border-t flex">
 								<input
