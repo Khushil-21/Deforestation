@@ -6,15 +6,12 @@ import uvicorn
 import os
 from typing import List
 from fastapi.middleware.cors import CORSMiddleware
-import tensorflow as tf
-from tensorflow.keras.models import Model
 import numpy as np
 import cv2
 import ee
 import geemap
 import matplotlib.pyplot as plt
 from sklearn.preprocessing import StandardScaler
-import keras
 import pandas as pd
 import cloudinary
 import cloudinary.uploader
@@ -73,29 +70,12 @@ def generateMasks(
     start_date,
     end_date,
     i,
-    intermediate_layer_model,
     bbox=[-59.5026, 2.9965, -59.2035, 3.1899],
 ):
 
     # Define the collections
     global l4, l5, l6, l7, l8, l9
     roi = ee.Geometry.Rectangle(bbox)
-
-    # Helper function to filter collections
-
-    # Filter each collection
-    # filtered_l4 = filter_col(l4, roi, start_date, end_date)
-    # filtered_l5 = filter_col(l5, roi, start_date, end_date)
-    # filtered_l7 = filter_col(l7, roi, start_date, end_date)
-    # filtered_l8 = filter_col(l8, roi, start_date, end_date)
-    # filtered_l9 = filter_col(l9, roi, start_date, end_date)
-    # Merge the filtered collections
-    # merged_collection = ee.ImageCollection(
-    #     filtered_l4.merge(filtered_l5)
-    #     .merge(filtered_l7)
-    #     .merge(filtered_l8)
-    #     .merge(filtered_l9)
-    # )
 
     filtered_sentinal = filter_col(sentinal, roi, start_date, end_date)
     # Example: Get the first image from the merged collection
@@ -106,10 +86,6 @@ def generateMasks(
     print(rgb_img.shape)
 
     img = rgb_img[:, :, 0]
-    # image = Image.fromarray(img)
-    # buffer = io.BytesIO()
-    # image.save(buffer, format="PNG")
-    # buffer.seek(0)
     if img.dtype != np.uint8:
         img = img.astype(np.uint8)
     _, buffer = cv2.imencode(".png", img)
@@ -119,13 +95,6 @@ def generateMasks(
     scaler = StandardScaler()
     scaled_data = scaler.fit_transform(img)
     scaled_data *= 255
-
-    img_resized = cv2.resize(scaled_data, (512, 512))
-    img_resized = np.expand_dims(img_resized, axis=-1)
-    img_resized = np.expand_dims(img_resized, axis=0)
-
-    # intermediate_output = intermediate_layer_model.predict(img_resized)
-    # out=intermediate_output[0,:,:,0]
 
     binary_mask = np.where(scaled_data >= 125, 1, 0)
 
@@ -141,12 +110,11 @@ def generateMasks(
     print(f"Land Percentage: {land_percentage:.2f}%")
 
     return {
-        "year": i,
+        "year": i-1,
         "forest Area(%)": forest_percentage,
         "land_Area(%)": land_percentage,
         "img_url": response["url"],
     }
-    # return forestData
 
 
 @app.get("/")
@@ -179,25 +147,18 @@ async def get_history(request: BboxRequest):
         api_secret=os.getenv("CLOUD_KEY"),  # Replace with your Cloudinary API secret
     )
 
-    keras.config.enable_unsafe_deserialization()
-    # model = tf.keras.models.load_model("F:\\Maverick\\unet_model_final.keras")
-    layer_name = "conv2d_35"  # Replace with your layer of interest
-    # intermediate_layer_model = Model(inputs=model.input, outputs=model.get_layer(layer_name).output)
-    intermediate_layer_model = None
     print(request.bbox)
     bbox = request.bbox
-    # year=year
     for i in range(1999, 2021, 3):
         start_date = ee.Date.fromYMD(i - 1, 1, 1)
         end_date = ee.Date.fromYMD(i + 1, 12, 31)
         forestData.append(
-            generateMasks(start_date, end_date, i, intermediate_layer_model, bbox)
+            generateMasks(start_date, end_date, i, bbox)
         )
 
     retFor = {
         "received_data": forestData,
     }
-    # report=forestData
 
     if data != retFor:
         data = retFor

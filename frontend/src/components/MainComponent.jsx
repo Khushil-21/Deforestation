@@ -107,6 +107,7 @@ function MainComponent() {
 		setIsLoading("loading");
 		try {
 			console.log(box, boundingBox);
+			setHistoryData(null);
 			axios
 				.post("http://localhost:5000/api/get/history", {
 					bbox: box,
@@ -122,7 +123,8 @@ function MainComponent() {
 					console.log(err);
 				});
 		} catch (error) {
-			console.error("Error fetching history data:", error);
+			console.log("Error fetching history data:", error);
+			setHistoryData(null);
 		}
 	};
 
