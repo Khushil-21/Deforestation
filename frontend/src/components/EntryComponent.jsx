@@ -46,13 +46,22 @@ export default function EntryComponent() {
 			initial="initial"
 			animate="animate"
 			exit="exit"
+			style={{
+				background:
+					"black url(http://fc01.deviantart.net/fs71/f/2012/160/b/9/stars_by_paulinemoss-d52un4e.jpg)",
+				animation: "stars 205s linear alternate",
+			}}
 		>
-			<motion.h1 className="text-8xl font-bold" variants={titleVariants}>
+			<motion.h1
+				className="text-8xl font-bold text-white"
+				variants={titleVariants}
+			>
 				{CompanyName}
 			</motion.h1>
-			<motion.p className="text-3xl" variants={taglineVariants}>
+			<motion.p className="text-3xl text-white" variants={taglineVariants}>
 				{CompanyTagline}
 			</motion.p>
+			<div id="box"></div>
 		</motion.div>
 	);
 }

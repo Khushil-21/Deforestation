@@ -93,32 +93,38 @@ def generateMasks(
         rgb_img = np.repeat(rgb_img, 3, axis=2)
     elif rgb_img.shape[2] > 4:
         rgb_img = rgb_img[:, :, :3]  # Take only the first 3 channels
-    
+
     print(f"Processed image shape: {rgb_img.shape}")
 
     # Normalize the image to 0-255 range
-    rgb_img = ((rgb_img - rgb_img.min()) / (rgb_img.max() - rgb_img.min()) * 255).astype(np.uint8)
-    
+    rgb_img = (
+        (rgb_img - rgb_img.min()) / (rgb_img.max() - rgb_img.min()) * 255
+    ).astype(np.uint8)
+
     # Create a mask for forest (green) and land (red)
     forest_mask = rgb_img[:, :, 0] > 125  # Assuming higher values indicate forest
     land_mask = ~forest_mask
 
     # Create a new image with red for land and green for forest
     colored_img = np.zeros_like(rgb_img)
-    colored_img[land_mask] = [138, 255, 151]  # Red for land
-    colored_img[forest_mask] = [138, 190, 255]  # Green for forest
-    
+    if platform == "Production":
+        colored_img[land_mask] = [138, 190, 255]  # Red for land
+        colored_img[forest_mask] = [138, 255, 151]  # Green for forest
+    else:
+        colored_img[land_mask] = [138, 255, 151]  # Red for land
+        colored_img[forest_mask] = [138, 190, 255]  # Green for forest
+
     # Save the colorful image to a local file
     local_filename = f"temp_image_{i}.png"
     plt.imsave(local_filename, colored_img)
-    
+
     # Upload the local file to Cloudinary
     response = cloudinary.uploader.upload(local_filename, resource_type="image")
     print("Uploaded image URL:", response["url"])
-    
+
     # Remove the temporary local file
     os.remove(local_filename)
-    
+
     # Calculate forest and land percentages
     total_pixels = rgb_img.shape[0] * rgb_img.shape[1]
     forest_pixels = np.sum(forest_mask)
@@ -185,7 +191,9 @@ async def get_history(request: BboxRequest):
     for i in range(1999, 2022, 1):
         start_date = ee.Date.fromYMD(i - 1, 1, 1)
         end_date = ee.Date.fromYMD(i + 1, 12, 31)
-        forestData.append(generateMasks(start_date, end_date, i, bbox, request.platform))
+        forestData.append(
+            generateMasks(start_date, end_date, i, bbox, request.platform)
+        )
 
     retFor = {
         "received_data": forestData,
