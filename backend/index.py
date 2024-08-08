@@ -74,7 +74,6 @@ def generateMasks(
     bbox=[-59.5026, 2.9965, -59.2035, 3.1899],
     platform="Production",
 ):
-
     # Define the collections
     global l4, l5, l6, l7, l8, l9
     roi = ee.Geometry.Rectangle(bbox)
@@ -85,18 +84,38 @@ def generateMasks(
 
     rgb_img = geemap.ee_to_numpy(first_image, region=roi)
 
-    print(rgb_img.shape)
+    print(f"Original image shape: {rgb_img.shape}")
 
-    img = rgb_img[:, :, 0]
-    if img.dtype != np.uint8:
-        img = img.astype(np.uint8)
-    _, buffer = cv2.imencode(".png", img)
-    buffer = io.BytesIO(buffer)
-    response = cloudinary.uploader.upload(buffer, resource_type="image")
+    # Ensure the image has 3 channels (RGB)
+    if len(rgb_img.shape) == 2:
+        rgb_img = np.stack((rgb_img,) * 3, axis=-1)
+    elif rgb_img.shape[2] == 1:
+        rgb_img = np.repeat(rgb_img, 3, axis=2)
+    elif rgb_img.shape[2] > 4:
+        rgb_img = rgb_img[:, :, :3]  # Take only the first 3 channels
+    
+    print(f"Processed image shape: {rgb_img.shape}")
+
+    # Normalize the image to 0-255 range
+    rgb_img = ((rgb_img - rgb_img.min()) / (rgb_img.max() - rgb_img.min()) * 255).astype(np.uint8)
+    
+    # Save the colorful image to a local file
+    local_filename = f"temp_image_{i}.png"
+    plt.imsave(local_filename, rgb_img)
+    
+    # Upload the local file to Cloudinary
+    response = cloudinary.uploader.upload(local_filename, resource_type="image")
     print("Uploaded image URL:", response["url"])
+    
+    # Remove the temporary local file
+    os.remove(local_filename)
+    
+    # Use the first channel for forest/land calculation
+    img = rgb_img[:, :, 0]
+    
     scaler = StandardScaler()
-    scaled_data = scaler.fit_transform(img)
-    scaled_data *= 255
+    scaled_data = scaler.fit_transform(img.reshape(-1, 1)).reshape(img.shape)
+    scaled_data = (scaled_data - scaled_data.min()) / (scaled_data.max() - scaled_data.min()) * 255
 
     binary_mask = np.where(scaled_data >= 125, 1, 0)
 
