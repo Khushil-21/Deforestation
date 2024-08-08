@@ -99,9 +99,18 @@ def generateMasks(
     # Normalize the image to 0-255 range
     rgb_img = ((rgb_img - rgb_img.min()) / (rgb_img.max() - rgb_img.min()) * 255).astype(np.uint8)
     
+    # Create a mask for forest (green) and land (red)
+    forest_mask = rgb_img[:, :, 0] > 125  # Assuming higher values indicate forest
+    land_mask = ~forest_mask
+
+    # Create a new image with red for land and green for forest
+    colored_img = np.zeros_like(rgb_img)
+    colored_img[land_mask] = [138, 255, 151]  # Red for land
+    colored_img[forest_mask] = [138, 190, 255]  # Green for forest
+    
     # Save the colorful image to a local file
     local_filename = f"temp_image_{i}.png"
-    plt.imsave(local_filename, rgb_img)
+    plt.imsave(local_filename, colored_img)
     
     # Upload the local file to Cloudinary
     response = cloudinary.uploader.upload(local_filename, resource_type="image")
@@ -110,18 +119,10 @@ def generateMasks(
     # Remove the temporary local file
     os.remove(local_filename)
     
-    # Use the first channel for forest/land calculation
-    img = rgb_img[:, :, 0]
-    
-    scaler = StandardScaler()
-    scaled_data = scaler.fit_transform(img.reshape(-1, 1)).reshape(img.shape)
-    scaled_data = (scaled_data - scaled_data.min()) / (scaled_data.max() - scaled_data.min()) * 255
-
-    binary_mask = np.where(scaled_data >= 125, 1, 0)
-
-    total_pixels = binary_mask.size
-    forest_pixels = np.sum(binary_mask >= 0.9)
-    land_pixels = np.sum(binary_mask < 0.9)
+    # Calculate forest and land percentages
+    total_pixels = rgb_img.shape[0] * rgb_img.shape[1]
+    forest_pixels = np.sum(forest_mask)
+    land_pixels = np.sum(land_mask)
 
     forest_percentage = (forest_pixels / total_pixels) * 100
     land_percentage = (land_pixels / total_pixels) * 100
