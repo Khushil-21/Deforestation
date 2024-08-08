@@ -6,16 +6,22 @@ function App() {
   const [showMainComponent, setShowMainComponent] = useState(false);
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setShowMainComponent(true);
-    }, 9000);
+    const handleKeyPress = (event) => {
+      if (event.key === 'Enter') {
+        setShowMainComponent(true);
+      }
+    };
 
-    return () => clearTimeout(timer);
+    document.addEventListener('keydown', handleKeyPress);
+
+    return () => {
+      document.removeEventListener('keydown', handleKeyPress);
+    };
   }, []);
 
   return (
     <>
-      {showMainComponent ? <MainComponent/> : <EntryComponent />}
+      {showMainComponent ? <MainComponent /> : <EntryComponent />}
     </>
   );
 }

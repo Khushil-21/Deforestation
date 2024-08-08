@@ -62,6 +62,12 @@ export default function EntryComponent() {
 				{CompanyTagline}
 			</motion.p>
 			<div id="box"></div>
+			<motion.p
+				className="text-3xl text-white animate-pulse"
+				variants={taglineVariants}
+			>
+				Press Enter to continue
+			</motion.p>
 		</motion.div>
 	);
 }
