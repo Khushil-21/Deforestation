@@ -56,6 +56,7 @@ report = str()
 
 class BboxRequest(BaseModel):
     bbox: List[float] = None
+    platform: str = "Production"
 
 
 class QnaRequest(BaseModel):
@@ -71,6 +72,7 @@ def generateMasks(
     end_date,
     i,
     bbox=[-59.5026, 2.9965, -59.2035, 3.1899],
+    platform="Production",
 ):
 
     # Define the collections
@@ -109,12 +111,22 @@ def generateMasks(
     print(f"Forest Percentage: {forest_percentage:.2f}%")
     print(f"Land Percentage: {land_percentage:.2f}%")
 
-    return {
-        "year": i-1,
-        "forest Area(%)": forest_percentage,
-        "land_Area(%)": land_percentage,
-        "img_url": response["url"],
-    }
+    if platform == "Production":
+        print("Production")
+        return {
+            "year": i - 1,
+            "forest Area(%)": forest_percentage,
+            "land_Area(%)": land_percentage,
+            "img_url": response["url"],
+        }
+    else:
+        print("Local")
+        return {
+            "year": i - 1,
+            "forest Area(%)": land_percentage,
+            "land_Area(%)": forest_percentage,
+            "img_url": response["url"],
+        }
 
 
 @app.get("/")
@@ -138,6 +150,7 @@ def getBot(data: dict):
 
 @app.post("/api/get/history")
 async def get_history(request: BboxRequest):
+    print(request.platform + " is the platform")
     print("we are here", request)
     global data
     forestData = []
@@ -149,12 +162,10 @@ async def get_history(request: BboxRequest):
 
     print(request.bbox)
     bbox = request.bbox
-    for i in range(1999, 2021, 3):
+    for i in range(1999, 2022, 1):
         start_date = ee.Date.fromYMD(i - 1, 1, 1)
         end_date = ee.Date.fromYMD(i + 1, 12, 31)
-        forestData.append(
-            generateMasks(start_date, end_date, i, bbox)
-        )
+        forestData.append(generateMasks(start_date, end_date, i, bbox, request.platform))
 
     retFor = {
         "received_data": forestData,

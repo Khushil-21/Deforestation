@@ -111,6 +111,7 @@ function MainComponent() {
 			axios
 				.post("http://localhost:5000/api/get/history", {
 					bbox: box,
+					platform: "Production",
 				})
 				.then((data) => {
 					console.log(data);
