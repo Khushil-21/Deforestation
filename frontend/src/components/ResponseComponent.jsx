@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import ChatComponent from "./ChatComponent";
+import { FaPlay, FaPause } from "react-icons/fa";
 
 function ResponseComponent({
 	isLoading,
@@ -11,6 +12,8 @@ function ResponseComponent({
 	console.log("historyData: ", historyData);
 	const [selectedYear, setSelectedYear] = useState();
 	const [selectedData, setSelectedData] = useState(null);
+	const [isPlaying, setIsPlaying] = useState(false);
+	const intervalRef = useRef(null);
 
 	useEffect(() => {
 		if (historyData) {
@@ -18,6 +21,7 @@ function ResponseComponent({
 			setSelectedData(yearData);
 		}
 	}, [historyData, selectedYear]);
+
 	useEffect(() => {
 		if (historyData) {
 			setSelectedYear(historyData[0].year);
@@ -26,6 +30,35 @@ function ResponseComponent({
 
 	const handleYearChange = (event) => {
 		setSelectedYear(Number(event.target.value));
+	};
+
+	const handlePlayPause = () => {
+		if (isPlaying) {
+			clearInterval(intervalRef.current);
+			setIsPlaying(false);
+		} else {
+			const lastIndex = historyData.length - 1;
+			const currentIndex = historyData.findIndex((item) => item.year === selectedYear);
+			
+			if (currentIndex === lastIndex) {
+				setSelectedYear(historyData[0].year);
+			}
+			
+			intervalRef.current = setInterval(() => {
+				setSelectedYear((prevYear) => {
+					const currentIndex = historyData.findIndex((item) => item.year === prevYear);
+					const nextIndex = currentIndex + 1;
+					if (nextIndex < historyData.length) {
+						return historyData[nextIndex].year;
+					} else {
+						clearInterval(intervalRef.current);
+						setIsPlaying(false);
+						return historyData[lastIndex].year;
+					}
+				});
+			}, 500);
+			setIsPlaying(true);
+		}
 	};
 
 	return (
@@ -75,7 +108,7 @@ function ResponseComponent({
 								/>
 							</div>
 							<div className="h-20 flex justify-center items-center gap-10 rounded-xl overflow-hidden">
-								<div className="p-4 bg-white rounded-xl shadow-lg">
+								<div className="p-4 bg-white rounded-xl shadow-lg flex items-center">
 									<select
 										value={selectedYear}
 										onChange={handleYearChange}
@@ -88,6 +121,16 @@ function ResponseComponent({
 												</option>
 											))}
 									</select>
+									<button
+										className="ml-2 text-blue-500 focus:outline-none"
+										onClick={handlePlayPause}
+									>
+										{isPlaying ? (
+											<FaPause className="w-4 h-4" />
+										) : (
+											<FaPlay className="w-4 h-4" />
+										)}
+									</button>
 								</div>
 								<div className="px-2 py-2 rounded-xl bg-green-100 border border-green-500 text-green-500 font-semibold">
 									forest area {selectedData?.["forest Area(%)"]?.toFixed(3)}%
