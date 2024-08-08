@@ -4,7 +4,10 @@ import React, { useState, useEffect, useRef } from "react";
 const ChatComponent = () => {
 	const [isChatboxOpen, setIsChatboxOpen] = useState(false);
 	const [messages, setMessages] = useState([
-		{ text: "Hello! How can I assist you today?", user: false },
+		{
+			text: "Hello! I'm your personal assistant, here to provide you with all the latest information and reports on deforestation. Ask me anything about deforestation, and I'll give you the most accurate answers. I can also predict future deforestation trends in your area based on current data, though these predictions may not be entirely accurate. How can I assist you today?",
+			user: false,
+		},
 	]);
 	const chatContainerRef = useRef(null);
 
