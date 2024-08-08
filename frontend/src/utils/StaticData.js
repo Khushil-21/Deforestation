@@ -1,5 +1,5 @@
 export const CompanyName = "Canopy Watch";
-export const CompanyTagline = "Unveiling Earth's Green History: Track Deforestation and Empower Nature's Future";
+export const CompanyTagline = "Preserve Our Forests: Monitor Deforestation, Secure Tomorrow's Green Legacy";
 
 export const MainPageLoadingDelay = 4000;
 
